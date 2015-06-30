@@ -1,0 +1,18 @@
+package com.jose.model;
+
+import java.util.List;
+
+/**
+ * Created by agua on 30/06/15.
+ */
+public class LibroDiario {
+    private List<Asiento> mAsientos;
+
+    public void addAsiento(Asiento asiento) {
+        mAsientos.add(asiento);
+    }
+
+    public List<Asiento> getAsientos() {
+        return mAsientos;
+    }
+}
