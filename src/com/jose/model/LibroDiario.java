@@ -1,5 +1,6 @@
 package com.jose.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,6 +8,10 @@ import java.util.List;
  */
 public class LibroDiario {
     private List<Asiento> mAsientos;
+
+    public LibroDiario() {
+        mAsientos = new ArrayList<>();
+    }
 
     public void addAsiento(Asiento asiento) {
         mAsientos.add(asiento);
