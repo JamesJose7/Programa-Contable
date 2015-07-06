@@ -4,10 +4,10 @@ import com.jose.model.Asiento;
 import com.jose.model.LibroDiario;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.dev.XSSFSave;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import javax.print.Doc;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,29 +23,44 @@ public class FileWorkbook {
 
 
     public void openFile() {
-        mLibroDiarioFile = new File("libroDiario.xlsx");
+        mLibroDiarioFile = new File("Contabilidad.xlsx");
         //Create a new workbook
 
         if (!mLibroDiarioFile.exists()) {
             mWorkbook = new XSSFWorkbook();
+            List<XSSFSheet> sheets = new ArrayList<>();
+
             createLibroDiarioSheet();
+            createPlanDeCuentas();
+
+            try {
+                //create a new file
+                FileOutputStream fos = new FileOutputStream(mLibroDiarioFile);
+                //write workBook
+                mWorkbook.write(fos);
+                fos.close();
+                System.out.println("File created");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-        readSheet();
+        readLibroDiarioSheet();
         testPrintLibroDiario();
 
     }
 
-    private void readSheet() {
+
+    private void readLibroDiarioSheet() {
         try {
 
-            FileInputStream file = new FileInputStream(new File("libroDiario.xlsx"));
+            FileInputStream file = new FileInputStream(new File("Contabilidad.xlsx"));
 
             //Create a workbook from the file
-            XSSFWorkbook workbook = new XSSFWorkbook(file);
+            mWorkbook = new XSSFWorkbook(file);
 
             //Get the desired sheet
-            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFSheet sheet = mWorkbook.getSheetAt(0);
 
             //Iterate through rows
             Iterator<Row> rowIterator = sheet.iterator();
@@ -167,47 +182,124 @@ public class FileWorkbook {
 
     }
 
-    private void testPrintLibroDiario() {
-        List<Asiento> asientoList = mLibroDiario.getAsientos();
-        for (Asiento asiento : asientoList) {
-            testPrintAsiento(asiento);
-            System.out.println("\n");
-        }
+    private void createPlanDeCuentas() {
+        XSSFSheet sheet = mWorkbook.createSheet("Plan de Cuentas");
+
+        //Data to be written
+        Row row = sheet.createRow((short) 0);
+        Cell cell = row.createCell((short) 0);
+        createCell(mWorkbook, row, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        cell.setCellValue("Plan de cuentas");
+
+        Row row1 = sheet.createRow((short) 1);
+        row1.createCell((short) 0);
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row (0-based)
+                1, //last row  (0-based)
+                0, //first column (0-based)
+                4  //last column  (0-based)
+        ));
+
+        Row row2 = sheet.createRow((short) 2);
+
+        Row row3 = sheet.createRow((short) 3);
+        Cell cell31 = row3.createCell((short) 0);
+        createCell(mWorkbook, row3, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        cell31.setCellValue("Estado de Situación Financiera");
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                3, //first row (0-based)
+                3, //last row  (0-based)
+                0, //first column (0-based)
+                4  //last column  (0-based)
+        ));
+
+        sheet.createRow((short) 4);
+        Row row5 = sheet.createRow((short) 5);
+        Cell cell51 = row5.createCell((short) 0);
+        Cell cell52 = row5.createCell((short) 1);
+        Row row6 = sheet.createRow((short) 6);
+        Cell cell61 = row6.createCell((short) 0);
+        Cell cell62 = row6.createCell((short) 1);
+
+        cell51.setCellValue("1.");
+        cell52.setCellValue("ACTIVO");
+        cell61.setCellValue("1.1");
+        cell62.setCellValue("ACTIVO CORRIENTE");
+
+//        sheet.createRow((short) 7);
+//        sheet.createRow((short) 8);
+//        sheet.createRow((short) 9);
+//        sheet.createRow((short) 10);
+//        sheet.createRow((short) 11);
+
+        Row row12 = sheet.createRow((short) 12);
+        Cell cell121 = row12.createCell((short) 0);
+        Cell cell122 = row12.createCell((short) 1);
+
+        cell121.setCellValue("1.2");
+        cell122.setCellValue("ACTIVO NO CORRIENTE");
+
+//        sheet.createRow((short) 13);
+//        sheet.createRow((short) 14);
+//        sheet.createRow((short) 15);
+//        sheet.createRow((short) 16);
+//        sheet.createRow((short) 17);
+
+        sheet.createRow((short) 18);
+        Row row19 = sheet.createRow((short) 19);
+        Cell cell191 = row19.createCell((short) 0);
+        Cell cell192 = row19.createCell((short) 1);
+        Row row20 = sheet.createRow((short) 20);
+        Cell cell201 = row20.createCell((short) 0);
+        Cell cell202 = row20.createCell((short) 1);
+
+        cell191.setCellValue("2.");
+        cell192.setCellValue("PASIVO");
+        cell201.setCellValue("2.1");
+        cell202.setCellValue("PASIVO CORRIENTE");
+
+//        sheet.createRow((short) 21);
+//        sheet.createRow((short) 22);
+//        sheet.createRow((short) 23);
+//        sheet.createRow((short) 24);
+//        sheet.createRow((short) 25);
+
+        Row row26 = sheet.createRow((short) 26);
+        Cell cell261 = row26.createCell((short) 0);
+        Cell cell262 = row26.createCell((short) 1);
+
+        cell261.setCellValue("2.2");
+        cell262.setCellValue("PASIVO NO CORRIENTE");
+
+//        sheet.createRow((short) 27);
+//        sheet.createRow((short) 28);
+//        sheet.createRow((short) 29);
+//        sheet.createRow((short) 30);
+//        sheet.createRow((short) 31);
+
+        Row row32 = sheet.createRow((short) 32);
+        Cell cell321 = row26.createCell((short) 0);
+        Cell cell322 = row26.createCell((short) 1);
+
+        cell321.setCellValue("3.");
+        cell322.setCellValue("PATRIMONIO");
+
+//        sheet.createRow((short) 33);
+//        sheet.createRow((short) 34);
+//        sheet.createRow((short) 35);
+//        sheet.createRow((short) 36);
+//        sheet.createRow((short) 37);
+
+
+
+
     }
 
-    private void testPrintAsiento(Asiento asiento) {
-        System.out.println("Fecha: " + asiento.getFecha());
-        //Cuenta debitos
-        System.out.println("Cuenta debe:");
-        for (Map.Entry<String, Double> entry : asiento.getDebitos().entrySet()) {
-            System.out.printf("\tcuenta: %s\n" +
-                            "\tvalor: %.2f\n",
-                    entry.getKey(),
-                    entry.getValue());
-        }
-        //Cuenta creditos
-        System.out.println("Cuenta creditos:");
-        for (Map.Entry<String, Double> entry : asiento.getCreditos().entrySet()) {
-            System.out.printf("\tcuenta: %s\n" +
-                    "\tvalor: %.2f\n",
-                    entry.getKey(),
-                    entry.getValue());
-        }
-        System.out.println("Registro: " + asiento.getRegistro());
 
-    }
 
-    private boolean containsHeaders(String header) {
-        String[] headers = {"Libro Diario", "Fecha", "Nombre de Cuentas", "Debitos", "Creditos"};
 
-        for (String element : headers) {
-            if (element.equals(header)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     private void createLibroDiarioSheet() {
 
@@ -242,16 +334,49 @@ public class FileWorkbook {
                 4  //last column  (0-based)
         ));
 
-        try {
-            //create a new file
-            FileOutputStream fos = new FileOutputStream(mLibroDiarioFile);
-            //write workBook
-            mWorkbook.write(fos);
-            fos.close();
-            System.out.println("File created");
-        } catch (Exception e) {
-            e.printStackTrace();
+
+    }
+
+    private boolean containsHeaders(String header) {
+        String[] headers = {"Libro Diario", "Fecha", "Nombre de Cuentas", "Debitos", "Creditos"};
+
+        for (String element : headers) {
+            if (element.equals(header)) {
+                return true;
+            }
         }
+
+        return false;
+    }
+
+    private void testPrintLibroDiario() {
+        List<Asiento> asientoList = mLibroDiario.getAsientos();
+        for (Asiento asiento : asientoList) {
+            testPrintAsiento(asiento);
+            System.out.println("\n");
+        }
+    }
+
+    private void testPrintAsiento(Asiento asiento) {
+        System.out.println("Fecha: " + asiento.getFecha());
+        //Cuenta debitos
+        System.out.println("Cuenta debe:");
+        for (Map.Entry<String, Double> entry : asiento.getDebitos().entrySet()) {
+            System.out.printf("\tcuenta: %s\n" +
+                            "\tvalor: %.2f\n",
+                    entry.getKey(),
+                    entry.getValue());
+        }
+        //Cuenta creditos
+        System.out.println("Cuenta creditos:");
+        for (Map.Entry<String, Double> entry : asiento.getCreditos().entrySet()) {
+            System.out.printf("\tcuenta: %s\n" +
+                            "\tvalor: %.2f\n",
+                    entry.getKey(),
+                    entry.getValue());
+        }
+        System.out.println("Registro: " + asiento.getRegistro());
+
     }
 
 
