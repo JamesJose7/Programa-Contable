@@ -68,12 +68,7 @@ public class FileWorkbook {
             double credito = 0;
             String registro = "";
 
-            //Counter for columns
-            int colsCounter = 0;
-
-
             while (rowIterator.hasNext()) {
-                colsCounter = 0;
 
                 Row row = rowIterator.next();
 
@@ -84,90 +79,73 @@ public class FileWorkbook {
                     Cell cell = cellIterator.next();
 
                     //Check cell types
-                    switch (cell.getCellType())
-                    {
+                    switch (cell.getCellType()) {
                         case Cell.CELL_TYPE_NUMERIC:
-                            //System.out.print(cell.getNumericCellValue() + " Col: " + colsCounter + "\t\t");
 
                             if (row.getRowNum() > 1) {
                                 //Store values
-                                switch (colsCounter) {
-                                    case 3:
-                                        debito = cell.getNumericCellValue();
-                                        //System.out.println("TIMES ====> " + colsCounter + " " + debito);
-                                        debeExists = true;
-                                        haberExists = false;
-                                        break;
-                                    case 4:
-                                        credito = cell.getNumericCellValue();
-                                        //System.out.println("TIMES ====> " + colsCounter + " " + credito);
-                                        haberExists = true;
-                                        debeExists = false;
-                                        break;
+                                if (debeExists) {
+                                    debito = cell.getNumericCellValue();
+                                } else if (haberExists) {
+                                    credito = cell.getNumericCellValue();
                                 }
                             }
                             break;
                         case Cell.CELL_TYPE_STRING:
-                            if (!containsHeaders(cell.getStringCellValue())) {
-                                //System.out.print(cell.getStringCellValue() + " Col: " + colsCounter + "\t\t");
-                            }
+
                             if (cell.getStringCellValue().equals("-")) {
                                 isFinishedAsiento = true;
                             }
 
                             if (row.getRowNum() > 1) {
                                 //Store values
-                                switch (colsCounter) {
-                                    case 0:
-                                        if (fecha.equals("")) {
-                                            fecha = cell.getStringCellValue();
-                                            //System.out.println("TIMES ====> " + colsCounter + " " + fecha);
-                                        }
-                                        break;
-                                    case 1:
-                                        if (isFinishedAsiento) {
-                                            registro = cell.getStringCellValue();
-                                        } else {
-                                            cuentaDebe = cell.getStringCellValue();
-                                            //System.out.println("TIMES ====> " + colsCounter + " " + cuentaDebe);
-                                            debeExists = true;
-                                            haberExists = false;
 
-                                        }
-                                        break;
-                                    case 2:
+                                if (isFinishedAsiento) {
+                                    registro = cell.getStringCellValue();
+                                    debeExists = true;
+                                    haberExists = false;
+                                    break;
+                                }
+
+                                if (fecha.equals("")) {
+                                    fecha = cell.getStringCellValue();
+                                    debeExists = true;
+                                    haberExists = false;
+                                } else {
+
+                                    if (debeExists) {
+                                        cuentaDebe = cell.getStringCellValue();
+
+                                    }
+
+                                    if (haberExists) {
                                         cuentaHaber = cell.getStringCellValue();
-                                        //System.out.println("TIMES ====> " + colsCounter + " " + cuentaHaber);
+                                    }
+
+                                    if (cell.getStringCellValue().equals("*")) {
                                         haberExists = true;
                                         debeExists = false;
-                                        break;
-                                    default:
-                                        break;
+                                    }
+
                                 }
                             }
                             break;
                         default:
                             break;
                     }
-                    System.out.println("CELL =========> " + cell.getColumnIndex());
-                    colsCounter++;
                 }
-                System.out.println("ROW ========> " + row.getRowNum() + "    FECHA: " + fecha);
 
                 if (debeExists) {
-                    //System.out.println("ROW!!!!! ====> " + row.getRowNum());
                     mapDebe.put(cuentaDebe, debito);
-                    debeExists = false;
                 }
 
                 if (haberExists) {
-                    //System.out.println("ROW!!!!! ====> " + row.getRowNum());
                     mapHaber.put(cuentaHaber, credito);
-                    haberExists = false;
                 }
 
 
                 if (isFinishedAsiento) {
+                    mapDebe.remove("*");
 
                     mLibroDiario.addAsiento(new Asiento(fecha, mapDebe, mapHaber, registro));
                     fecha = "";
@@ -177,11 +155,15 @@ public class FileWorkbook {
 
                     isFinishedAsiento = false;
                 }
+
             }
+
+
             file.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
     }
 
