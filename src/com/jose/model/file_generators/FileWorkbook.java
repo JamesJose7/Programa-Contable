@@ -37,15 +37,6 @@ public class FileWorkbook {
 
                 createLibroDiarioSheet();
                 createPlanDeCuentas();
-
-                //create a new file
-                FileOutputStream fos = new FileOutputStream(mLibroDiarioFile);
-                //write workBook
-                mWorkbook.write(fos);
-                fos.close();
-                System.out.println("File created");
-
-
             }
             FileInputStream file = new FileInputStream(mLibroDiarioFile);
 
@@ -55,19 +46,31 @@ public class FileWorkbook {
 
             readLibroDiarioSheet();
             readPlanDeCuentasSheet();
-            testPrintLibroDiario();
-            printPlanDeCuentas();
+
             createLibroMayor();
+            createLibroMayorSheet();
+
+            printLibroDiario();
+            printPlanDeCuentas();
             printLibrosMayores();
 
+            createFile();
 
             file.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
+    }
+
+    private void createFile() throws Exception{
+        //create a new file
+        FileOutputStream fos = new FileOutputStream(mLibroDiarioFile);
+        //write workBook
+        mWorkbook.write(fos);
+        fos.close();
+        System.out.println("File created");
     }
 
     private void readPlanDeCuentasSheet() {
@@ -411,6 +414,77 @@ public class FileWorkbook {
 
     }
 
+    private void createLibroMayorSheet() {
+        //Create sheet for "Libro Mayor"
+        XSSFSheet sheet = mWorkbook.createSheet("Libro Mayor");
+
+        //Data to be writen
+
+        //Rows counter to keep printing downwards
+        short rowCounter = 0;
+
+        for (LibroMayor libroMayor : mLibrosMayores.getLibrosMayoresList()) {
+            //Headers
+            Row row = sheet.createRow(rowCounter);
+            Cell cell = row.createCell((short) 0);
+            createCell(mWorkbook, row, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+            sheet.addMergedRegion(new CellRangeAddress(
+                    rowCounter, //first row (0-based)
+                    rowCounter, //last row  (0-based)
+                    0, //first column (0-based)
+                    5  //last column  (0-based)
+            ));
+            cell.setCellValue("Libro Mayor");
+            rowCounter++;
+
+            Row row1 = sheet.createRow(rowCounter);
+            Cell cell1 = row1.createCell((short) 0);
+            sheet.addMergedRegion(new CellRangeAddress(
+                    rowCounter, //first row (0-based)
+                    rowCounter, //last row  (0-based)
+                    0, //first column (0-based)
+                    5  //last column  (0-based)
+            ));
+            cell1.setCellValue("Cuenta: " + libroMayor.getCuenta().toUpperCase());
+            rowCounter++;
+
+            Row row2 = sheet.createRow(rowCounter);
+            Cell cell2 = row2.createCell((short) 0);
+            sheet.addMergedRegion(new CellRangeAddress(
+                    rowCounter, //first row (0-based)
+                    rowCounter, //last row  (0-based)
+                    0, //first column (0-based)
+                    5  //last column  (0-based)
+            ));
+            cell2.setCellValue("Codigo: " + libroMayor.getCodigo());
+            rowCounter++;
+
+            Row row3 = sheet.createRow(rowCounter);
+            row3.createCell((short) 0).setCellValue("FECHA");
+            row3.createCell((short) 1).setCellValue("DETALLE");
+            row3.createCell((short) 2).setCellValue("REF.");
+            row3.createCell((short) 3).setCellValue("DEBE");
+            row3.createCell((short) 4).setCellValue("HABER");
+            row3.createCell((short) 5).setCellValue("SALDO");
+            rowCounter++;
+
+            for (ElementoMayor elementoMayor : libroMayor.getElementosMayores()) {
+                Row row4 = sheet.createRow(rowCounter);
+                row4.createCell((short) 0).setCellValue(elementoMayor.getFecha());
+                row4.createCell((short) 1).setCellValue(elementoMayor.getDetalle());
+                row4.createCell((short) 2).setCellValue(elementoMayor.getReferencia());
+                row4.createCell((short) 3).setCellValue(elementoMayor.getDebe());
+                row4.createCell((short) 4).setCellValue(elementoMayor.getHaber());
+                row4.createCell((short) 5).setCellValue(elementoMayor.getSaldo());
+
+                rowCounter++;
+            }
+
+            rowCounter += 3;
+
+        }
+    }
+
     private void createLibroMayor() {
         for (Map.Entry<String, String> entry : mPlanDeCuentas.getCuentas().entrySet()) {
             LibroMayor libroMayor;
@@ -492,7 +566,7 @@ public class FileWorkbook {
         }
     }
 
-    private void testPrintLibroDiario() {
+    private void printLibroDiario() {
         List<Asiento> asientoList = mLibroDiario.getAsientos();
         for (Asiento asiento : asientoList) {
             testPrintAsiento(asiento);
