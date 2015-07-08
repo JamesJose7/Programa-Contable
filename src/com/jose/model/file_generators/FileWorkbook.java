@@ -416,7 +416,12 @@ public class FileWorkbook {
 
     private void createLibroMayorSheet() {
         //Create sheet for "Libro Mayor"
-        XSSFSheet sheet = mWorkbook.createSheet("Libro Mayor");
+        XSSFSheet sheet;
+        try {
+            sheet = mWorkbook.createSheet("Libro Mayor");
+        } catch (Exception e) {
+            sheet = mWorkbook.getSheetAt(2);
+        }
 
         //Data to be writen
 
