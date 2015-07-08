@@ -1,11 +1,13 @@
 package com.jose.model.file_generators;
 
-import com.jose.model.Asiento;
-import com.jose.model.LibroDiario;
+import com.jose.model.libro_diario.Asiento;
+import com.jose.model.libro_diario.LibroDiario;
 import com.jose.model.PlanDeCuentas;
+import com.jose.model.libro_mayor.ElementoMayor;
+import com.jose.model.libro_mayor.LibroMayor;
+import com.jose.model.libro_mayor.LibrosMayores;
 import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.dev.XSSFSave;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -20,6 +22,7 @@ import java.util.*;
 public class FileWorkbook {
     LibroDiario mLibroDiario = new LibroDiario();
     PlanDeCuentas mPlanDeCuentas = new PlanDeCuentas();
+    LibrosMayores mLibrosMayores = new LibrosMayores();
     File mLibroDiarioFile;
     XSSFWorkbook mWorkbook;
 
@@ -43,7 +46,6 @@ public class FileWorkbook {
                 System.out.println("File created");
 
 
-
             }
             FileInputStream file = new FileInputStream(mLibroDiarioFile);
 
@@ -55,6 +57,8 @@ public class FileWorkbook {
             readPlanDeCuentasSheet();
             testPrintLibroDiario();
             printPlanDeCuentas();
+            createLibroMayor();
+            printLibrosMayores();
 
 
             file.close();
@@ -96,7 +100,7 @@ public class FileWorkbook {
                         }
                         break;
                     case Cell.CELL_TYPE_STRING:
-                        if (row.getRowNum() > 5) {
+                        if (row.getRowNum() > 4) {
                             if (!cell.getStringCellValue().equals("Estado de Resultado Integral")) {
                                 //Store values
                                 switch (cell.getColumnIndex()) {
@@ -104,7 +108,7 @@ public class FileWorkbook {
                                         codigo = cell.getStringCellValue();
                                         break;
                                     case 1:
-                                        cuenta = cell.getStringCellValue();
+                                        cuenta = cell.getStringCellValue().toUpperCase().trim();
                                         break;
                                 }
                             }
@@ -116,18 +120,8 @@ public class FileWorkbook {
             }
             mPlanDeCuentas.addCuenta(codigo, cuenta);
         }
+        mPlanDeCuentas.getCuentas().remove("");
     }
-
-    private void printPlanDeCuentas() {
-        System.out.println("\n\n\n\nCUENTAS\n");
-        for (Map.Entry<String, String> entry : mPlanDeCuentas.getCuentas().entrySet()) {
-            System.out.printf("%5s | %s\n",
-                    entry.getKey(),
-                    entry.getValue());
-
-        }
-    }
-
 
     private void readLibroDiarioSheet() {
 
@@ -146,6 +140,7 @@ public class FileWorkbook {
         boolean isFinishedAsiento = false;
         boolean debeExists = false;
         boolean haberExists = false;
+        int referencia = 1;
 
         //Temporal variables for each row
         String fecha = "";
@@ -234,8 +229,9 @@ public class FileWorkbook {
             if (isFinishedAsiento) {
                 mapDebe.remove("*");
 
-                mLibroDiario.addAsiento(new Asiento(fecha, mapDebe, mapHaber, registro));
+                mLibroDiario.addAsiento(new Asiento(fecha, mapDebe, mapHaber, registro, referencia));
                 fecha = "";
+                referencia++;
 
                 mapDebe = new HashMap<>();
                 mapHaber = new HashMap<>();
@@ -244,10 +240,6 @@ public class FileWorkbook {
             }
 
         }
-
-
-
-
 
     }
 
@@ -409,7 +401,6 @@ public class FileWorkbook {
         cell5.setCellValue("Debitos");
         cell6.setCellValue("Creditos");
 
-
         sheet.addMergedRegion(new CellRangeAddress(
                 0, //first row (0-based)
                 0, //last row  (0-based)
@@ -420,16 +411,85 @@ public class FileWorkbook {
 
     }
 
-    private boolean containsHeaders(String header) {
-        String[] headers = {"Libro Diario", "Fecha", "Nombre de Cuentas", "Debitos", "Creditos"};
+    private void createLibroMayor() {
+        for (Map.Entry<String, String> entry : mPlanDeCuentas.getCuentas().entrySet()) {
+            LibroMayor libroMayor;
+            List<ElementoMayor> elementosMayoresList = new ArrayList<>();
+            double saldo = 0;
+            boolean cuentaExists = false;
 
-        for (String element : headers) {
-            if (element.equals(header)) {
-                return true;
+            String cuenta = entry.getValue();
+
+            for (Asiento asiento : mLibroDiario.getAsientos()) {
+                ElementoMayor elementoMayor;
+
+                for (Map.Entry<String, Double> entryDebe : asiento.getDebitos().entrySet()) {
+                    if (entryDebe.getKey().equalsIgnoreCase(cuenta)) {
+                        saldo += entryDebe.getValue();
+
+                        elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
+                                entryDebe.getValue(), 0, saldo);
+
+                        elementosMayoresList.add(elementoMayor);
+
+                        cuentaExists = true;
+                    }
+                }
+
+                for (Map.Entry<String, Double> entryHaber : asiento.getCreditos().entrySet()) {
+                    if (entryHaber.getKey().equalsIgnoreCase(cuenta)) {
+                        saldo -= entryHaber.getValue();
+
+                        elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
+                                0, entryHaber.getValue(), saldo);
+
+                        elementosMayoresList.add(elementoMayor);
+
+                        cuentaExists = true;
+                    }
+                }
             }
-        }
 
-        return false;
+            if (cuentaExists) {
+                libroMayor = new LibroMayor(cuenta, entry.getKey(), elementosMayoresList);
+
+                mLibrosMayores.addLibroMayor(libroMayor);
+            }
+
+        }
+    }
+
+    private void printLibrosMayores() {
+        for (LibroMayor libroMayor : mLibrosMayores.getLibrosMayoresList()) {
+            System.out.printf("\nCuenta: %s\n" +
+                    "Codigo: %s\n", libroMayor.getCuenta(), libroMayor.getCodigo());
+            for (ElementoMayor elementoMayor : libroMayor.getElementosMayores()) {
+                System.out.printf("-----------------------------\n" +
+                                "Fecha: %s\n" +
+                                "Detalle: %s\n" +
+                                "Referencia: %d\n" +
+                                "Debe: %.2f\n" +
+                                "Haber: %.2f\n" +
+                                "Saldo: %.2f\n",
+                        elementoMayor.getFecha(),
+                        elementoMayor.getDetalle(),
+                        elementoMayor.getReferencia(),
+                        elementoMayor.getDebe(),
+                        elementoMayor.getHaber(),
+                        elementoMayor.getSaldo());
+            }
+            System.out.println("-----------------TERMINADO----------------------------");
+        }
+    }
+
+    private void printPlanDeCuentas() {
+        System.out.println("\n\n\n\nCUENTAS\n");
+        for (Map.Entry<String, String> entry : mPlanDeCuentas.getCuentas().entrySet()) {
+            System.out.printf("%8s | %s\n",
+                    entry.getKey(),
+                    entry.getValue());
+
+        }
     }
 
     private void testPrintLibroDiario() {

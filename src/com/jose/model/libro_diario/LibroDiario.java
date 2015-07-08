@@ -1,4 +1,4 @@
-package com.jose.model;
+package com.jose.model.libro_diario;
 
 import java.util.ArrayList;
 import java.util.List;

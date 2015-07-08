@@ -1,4 +1,4 @@
-package com.jose.model;
+package com.jose.model.libro_diario;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,12 +11,14 @@ public class Asiento {
     private Map<String, Double> mDebitos;
     private Map<String, Double> mCreditos;
     private String mRegistro;
+    private int mReferencia;
 
-    public Asiento(String fecha, Map<String, Double> debitos, Map<String, Double> creditos, String registro) {
+    public Asiento(String fecha, Map<String, Double> debitos, Map<String, Double> creditos, String registro, int referencia) {
         mFecha = fecha;
         mDebitos = debitos;
         mCreditos = creditos;
         mRegistro = registro;
+        mReferencia = referencia;
     }
 
     public void setFecha(String fecha) {
@@ -49,5 +51,13 @@ public class Asiento {
 
     public String getRegistro() {
         return mRegistro;
+    }
+
+    public int getReferencia() {
+        return mReferencia;
+    }
+
+    public void setReferencia(int referencia) {
+        mReferencia = referencia;
     }
 }
