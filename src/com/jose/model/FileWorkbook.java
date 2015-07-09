@@ -1,5 +1,7 @@
 package com.jose.model;
 
+import com.jose.model.balance_comprobacion.BalanceDeComprobacion;
+import com.jose.model.balance_comprobacion.ElementoBalanceDeComprobacion;
 import com.jose.model.libro_diario.Asiento;
 import com.jose.model.libro_diario.LibroDiario;
 import com.jose.model.plan_de_cuentas.PlanDeCuentas;
@@ -23,6 +25,7 @@ public class FileWorkbook {
     LibroDiario mLibroDiario = new LibroDiario();
     PlanDeCuentas mPlanDeCuentas = new PlanDeCuentas();
     LibrosMayores mLibrosMayores = new LibrosMayores();
+    BalanceDeComprobacion mBalanceDeComprobacion = new BalanceDeComprobacion();
     File mLibroDiarioFile = new File("Contabilidad.xlsx");
     XSSFWorkbook mWorkbook;
 
@@ -46,6 +49,20 @@ public class FileWorkbook {
 
         file.close();
 
+    }
+
+    public void generateBalanceComprobacion() throws Exception {
+//        //Open the workbook
+//        FileInputStream file = new FileInputStream(mLibroDiarioFile);
+//
+//        //Create a workbook from the file
+//        mWorkbook = new XSSFWorkbook(file);
+
+        createBalanceDeComprobacion();
+        printBalanceComprobacion();
+
+
+        //file.close();
     }
 
     public void generateLibroMayor() throws Exception {
@@ -535,11 +552,8 @@ public class FileWorkbook {
 
                 for (Map.Entry<String, Double> entryHaber : asiento.getCreditos().entrySet()) {
                     if (entryHaber.getKey().equalsIgnoreCase(cuenta)) {
-                        if (totalDebe == 0) {
-                            saldo += entryHaber.getValue();
-                        } else {
-                            saldo -= entryHaber.getValue();
-                        }
+                        saldo -= entryHaber.getValue();
+
                         totalHaber += entryHaber.getValue();
 
                         elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
@@ -562,6 +576,74 @@ public class FileWorkbook {
             }
 
         }
+    }
+
+    private void createBalanceDeComprobacion() {
+        int counter = 1;
+
+        List<ElementoBalanceDeComprobacion> elementosList = new ArrayList<>();
+
+        double totalSumasDebe = 0;
+        double totalSumasHaber = 0;
+        double totalSaldosDebe = 0;
+        double totalSaldosHaber = 0;
+
+        for (LibroMayor libroMayor : mLibrosMayores.getLibrosMayoresList()) {
+            ElementoBalanceDeComprobacion elementoBalanceDeComprobacion;
+
+            double saldoDebe;
+            double saldoHaber;
+
+            ElementoMayor ultimoElemento = libroMayor.getElementosMayores().get(libroMayor.getElementosMayores().size() - 1);
+
+            if (ultimoElemento.getDebe() > ultimoElemento.getHaber()) {
+                saldoDebe = ultimoElemento.getSaldo();
+                saldoHaber = 0;
+            } else {
+                saldoDebe = 0;
+                saldoHaber = ultimoElemento.getSaldo();
+            }
+
+            elementoBalanceDeComprobacion = new ElementoBalanceDeComprobacion(counter, libroMayor.getCodigo(), libroMayor.getCuenta(),
+                    ultimoElemento.getDebe(), ultimoElemento.getHaber(), saldoDebe, saldoHaber);
+
+            elementosList.add(elementoBalanceDeComprobacion);
+
+            totalSumasDebe += ultimoElemento.getDebe();
+            totalSumasHaber += ultimoElemento.getHaber();
+            totalSaldosDebe += saldoDebe;
+            totalSaldosHaber += saldoHaber;
+
+            counter++;
+        }
+        mBalanceDeComprobacion.setElementosBalance(elementosList);
+        mBalanceDeComprobacion.setTotalSaldosDebe(totalSaldosDebe);
+        mBalanceDeComprobacion.setTotalSaldosHaber(totalSaldosHaber);
+        mBalanceDeComprobacion.setTotalSumasDebe(totalSumasDebe);
+        mBalanceDeComprobacion.setTotalSumasHaber(totalSumasHaber);
+
+    }
+
+    private void printBalanceComprobacion() {
+        System.out.printf("| %2s | %8s | %-50s | %10s | %10s | %10s | %10s |\n",
+                "No", "Codigo", "Cuentas", "Debe", "Haber", "Debe", "Haber");
+        for (ElementoBalanceDeComprobacion elementoBalanceDeComprobacion : mBalanceDeComprobacion.getElementosBalance()) {
+            System.out.printf("| %2d | %8s | %-50s | %10.2f | %10.2f | %10.2f | %10.2f |\n",
+                    elementoBalanceDeComprobacion.getNumero(),
+                    elementoBalanceDeComprobacion.getCodigo(),
+                    elementoBalanceDeComprobacion.getCuenta(),
+                    elementoBalanceDeComprobacion.getSumaDebe(),
+                    elementoBalanceDeComprobacion.getSumaHaber(),
+                    elementoBalanceDeComprobacion.getSaldoDebe(),
+                    elementoBalanceDeComprobacion.getSaldoHaber());
+        }
+
+        System.out.printf("| %2s | %8s | %-50s | %10.2f | %10.2f | %10.2f | %10.2f |\n",
+                "", "", "TOTAL",
+                mBalanceDeComprobacion.getTotalSumasDebe(),
+                mBalanceDeComprobacion.getTotalSumasHaber(),
+                mBalanceDeComprobacion.getTotalSaldosDebe(),
+                mBalanceDeComprobacion.getTotalSaldosHaber());
     }
 
     private void printLibrosMayores() {

@@ -20,6 +20,7 @@ public class Machine {
         mMenu.put("Crear", "Crea un nuevo nuevo archivo Excel");
         mMenu.put("Abrir", "Lee el archivo modificado");
         mMenu.put("Mayorizar", "Genera el libro mayor de todas las cuentas");
+        mMenu.put("Balance", "Genera el balance de comprobacion");
         mMenu.put("Salir", "Sale del programa");
     }
 
@@ -51,6 +52,9 @@ public class Machine {
                         break;
                     case "mayorizar":
                         mFileWorkbook.generateLibroMayor();
+                        break;
+                    case "balance":
+                        mFileWorkbook.generateBalanceComprobacion();
                         break;
                     case "salir":
                         System.out.println(" - Programa terminado - ");

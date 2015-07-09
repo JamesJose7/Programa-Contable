@@ -8,13 +8,25 @@ import java.util.List;
  */
 public class BalanceDeComprobacion {
     private List<ElementoBalanceDeComprobacion> mElementosBalance;
-    private double mTotalSumas;
-    private double mTotalSaldos;
+    private double mTotalSumasDebe;
+    private double mTotalSumasHaber;
+    private double mTotalSaldosDebe;
+    private double mTotalSaldosHaber;
 
-    public BalanceDeComprobacion(List<ElementoBalanceDeComprobacion> elementosBalance, double totalSumas, double totalSaldos) {
+    public BalanceDeComprobacion(List<ElementoBalanceDeComprobacion> elementosBalance, double totalSumasDebe, double totalSumasHaber, double totalSaldosDebe, double totalSaldosHaber) {
         mElementosBalance = new ArrayList<>(elementosBalance);
-        mTotalSumas = totalSumas;
-        mTotalSaldos = totalSaldos;
+        mTotalSumasDebe = totalSumasDebe;
+        mTotalSumasHaber = totalSumasHaber;
+        mTotalSaldosDebe = totalSaldosDebe;
+        mTotalSaldosHaber = totalSaldosHaber;
+    }
+
+    public BalanceDeComprobacion() {
+        mElementosBalance = new ArrayList<>();
+    }
+
+    public void addElementoBalance(ElementoBalanceDeComprobacion elementoBalanceDeComprobacion) {
+        mElementosBalance.add(elementoBalanceDeComprobacion);
     }
 
     public List<ElementoBalanceDeComprobacion> getElementosBalance() {
@@ -25,19 +37,35 @@ public class BalanceDeComprobacion {
         mElementosBalance = elementosBalance;
     }
 
-    public double getTotalSumas() {
-        return mTotalSumas;
+    public double getTotalSumasDebe() {
+        return mTotalSumasDebe;
     }
 
-    public void setTotalSumas(double totalSumas) {
-        mTotalSumas = totalSumas;
+    public void setTotalSumasDebe(double totalSumasDebe) {
+        mTotalSumasDebe = totalSumasDebe;
     }
 
-    public double getTotalSaldos() {
-        return mTotalSaldos;
+    public double getTotalSumasHaber() {
+        return mTotalSumasHaber;
     }
 
-    public void setTotalSaldos(double totalSaldos) {
-        mTotalSaldos = totalSaldos;
+    public void setTotalSumasHaber(double totalSumasHaber) {
+        mTotalSumasHaber = totalSumasHaber;
+    }
+
+    public double getTotalSaldosDebe() {
+        return mTotalSaldosDebe;
+    }
+
+    public void setTotalSaldosDebe(double totalSaldosDebe) {
+        mTotalSaldosDebe = totalSaldosDebe;
+    }
+
+    public double getTotalSaldosHaber() {
+        return mTotalSaldosHaber;
+    }
+
+    public void setTotalSaldosHaber(double totalSaldosHaber) {
+        mTotalSaldosHaber = totalSaldosHaber;
     }
 }
