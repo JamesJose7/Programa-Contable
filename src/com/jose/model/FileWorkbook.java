@@ -535,7 +535,11 @@ public class FileWorkbook {
 
                 for (Map.Entry<String, Double> entryHaber : asiento.getCreditos().entrySet()) {
                     if (entryHaber.getKey().equalsIgnoreCase(cuenta)) {
-                        saldo -= entryHaber.getValue();
+                        if (totalDebe == 0) {
+                            saldo += entryHaber.getValue();
+                        } else {
+                            saldo -= entryHaber.getValue();
+                        }
                         totalHaber += entryHaber.getValue();
 
                         elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
