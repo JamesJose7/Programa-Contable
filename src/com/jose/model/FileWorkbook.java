@@ -1,8 +1,8 @@
-package com.jose.model.file_generators;
+package com.jose.model;
 
 import com.jose.model.libro_diario.Asiento;
 import com.jose.model.libro_diario.LibroDiario;
-import com.jose.model.PlanDeCuentas;
+import com.jose.model.plan_de_cuentas.PlanDeCuentas;
 import com.jose.model.libro_mayor.ElementoMayor;
 import com.jose.model.libro_mayor.LibroMayor;
 import com.jose.model.libro_mayor.LibrosMayores;
@@ -23,45 +23,59 @@ public class FileWorkbook {
     LibroDiario mLibroDiario = new LibroDiario();
     PlanDeCuentas mPlanDeCuentas = new PlanDeCuentas();
     LibrosMayores mLibrosMayores = new LibrosMayores();
-    File mLibroDiarioFile;
+    File mLibroDiarioFile = new File("Contabilidad.xlsx");
     XSSFWorkbook mWorkbook;
 
 
-    public void openFile() {
-        mLibroDiarioFile = new File("Contabilidad.xlsx");
+    public void openFile() throws Exception {
+        //Open the workbook
+        FileInputStream file = new FileInputStream(mLibroDiarioFile);
+
+        //Create a workbook from the file
+        mWorkbook = new XSSFWorkbook(file);
+
+
+        readLibroDiarioSheet();
+        readPlanDeCuentasSheet();
+
+        printLibroDiario();
+        printPlanDeCuentas();
+        printLibrosMayores();
+
+        createFile();
+
+        file.close();
+
+    }
+
+    public void generateLibroMayor() throws Exception {
+        //Open the workbook
+        FileInputStream file = new FileInputStream(mLibroDiarioFile);
+
+        //Create a workbook from the file
+        mWorkbook = new XSSFWorkbook(file);
+
+        createLibroMayor();
+        createLibroMayorSheet();
+
+        createFile();
+
+        file.close();
+    }
+
+    public void createWorkBook() throws Exception {
         //Create a new workbook
-        try {
-            if (!mLibroDiarioFile.exists()) {
-                mWorkbook = new XSSFWorkbook();
-                List<XSSFSheet> sheets = new ArrayList<>();
+        if (!mLibroDiarioFile.exists()) {
+            mWorkbook = new XSSFWorkbook();
+            List<XSSFSheet> sheets = new ArrayList<>();
 
-                createLibroDiarioSheet();
-                createPlanDeCuentas();
-            }
-            FileInputStream file = new FileInputStream(mLibroDiarioFile);
-
-            //Create a workbook from the file
-            mWorkbook = new XSSFWorkbook(file);
-
-
-            readLibroDiarioSheet();
-            readPlanDeCuentasSheet();
-
-            createLibroMayor();
-            createLibroMayorSheet();
-
-            printLibroDiario();
-            printPlanDeCuentas();
-            printLibrosMayores();
+            createLibroDiarioSheet();
+            createPlanDeCuentas();
 
             createFile();
-
-            file.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            System.out.println("El archivo ya fue creado.");
         }
-
-
     }
 
     private void createFile() throws Exception{

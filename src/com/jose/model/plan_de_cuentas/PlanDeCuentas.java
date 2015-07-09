@@ -1,4 +1,4 @@
-package com.jose.model;
+package com.jose.model.plan_de_cuentas;
 
 import java.util.HashMap;
 import java.util.Map;
