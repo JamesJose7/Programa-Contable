@@ -434,7 +434,8 @@ public class FileWorkbook {
         try {
             sheet = mWorkbook.createSheet("Libro Mayor");
         } catch (Exception e) {
-            sheet = mWorkbook.getSheetAt(2);
+            mWorkbook.removeSheetAt(2);
+            sheet = mWorkbook.createSheet("Libro Mayor");
         }
 
         //Data to be writen
@@ -509,16 +510,19 @@ public class FileWorkbook {
             LibroMayor libroMayor;
             List<ElementoMayor> elementosMayoresList = new ArrayList<>();
             double saldo = 0;
+            double totalDebe = 0;
+            double totalHaber = 0;
             boolean cuentaExists = false;
 
             String cuenta = entry.getValue();
+            ElementoMayor elementoMayor;
 
             for (Asiento asiento : mLibroDiario.getAsientos()) {
-                ElementoMayor elementoMayor;
 
                 for (Map.Entry<String, Double> entryDebe : asiento.getDebitos().entrySet()) {
                     if (entryDebe.getKey().equalsIgnoreCase(cuenta)) {
                         saldo += entryDebe.getValue();
+                        totalDebe += entryDebe.getValue();
 
                         elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
                                 entryDebe.getValue(), 0, saldo);
@@ -532,6 +536,7 @@ public class FileWorkbook {
                 for (Map.Entry<String, Double> entryHaber : asiento.getCreditos().entrySet()) {
                     if (entryHaber.getKey().equalsIgnoreCase(cuenta)) {
                         saldo -= entryHaber.getValue();
+                        totalHaber += entryHaber.getValue();
 
                         elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
                                 0, entryHaber.getValue(), saldo);
@@ -544,6 +549,9 @@ public class FileWorkbook {
             }
 
             if (cuentaExists) {
+                elementoMayor = new ElementoMayor("TOTAL", "", 0, totalDebe, totalHaber, Math.abs(saldo));
+                elementosMayoresList.add(elementoMayor);
+
                 libroMayor = new LibroMayor(cuenta, entry.getKey(), elementosMayoresList);
 
                 mLibrosMayores.addLibroMayor(libroMayor);

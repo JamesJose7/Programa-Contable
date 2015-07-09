@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9d40da4a-dfad-46a2-a5b1-c597377c7a6b" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/Machine.java" afterPath="$PROJECT_DIR$/src/CicloContable.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/jose/model/PlanDeCuentas.java" afterPath="$PROJECT_DIR$/src/com/jose/model/plan_de_cuentas/PlanDeCuentas.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/jose/model/file_generators/FileWorkbook.java" afterPath="$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Contabilidad.xlsx" afterPath="$PROJECT_DIR$/Contabilidad.xlsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java" afterPath="$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java" />
     </list>
     <ignored path="Programa Contable.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,8 +44,8 @@
       <file leaf-file-name="FileWorkbook.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.74277854">
-              <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.81568086">
+              <caret line="551" column="103" selection-start-line="551" selection-start-column="103" selection-end-line="551" selection-end-column="103" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -182,9 +179,9 @@
         <option value="$PROJECT_DIR$/src/com/jose/model/libro_diario/Asiento.java" />
         <option value="$PROJECT_DIR$/src/com/jose/model/file_generators/FileWorkbook.java" />
         <option value="$PROJECT_DIR$/src/com/jose/model/plan_de_cuentas/PlanDeCuentas.java" />
-        <option value="$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java" />
         <option value="$PROJECT_DIR$/src/com/jose/model/Machine.java" />
         <option value="$PROJECT_DIR$/src/CicloContable.java" />
+        <option value="$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java" />
       </list>
     </option>
   </component>
@@ -510,7 +507,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="777" y="95" width="1727" height="1204" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -527,7 +524,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15667656" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15667656" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3047882" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -913,8 +910,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.74277854">
-          <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.81568086">
+          <caret line="551" column="103" selection-start-line="551" selection-start-column="103" selection-end-line="551" selection-end-column="103" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
