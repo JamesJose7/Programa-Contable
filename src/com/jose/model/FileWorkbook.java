@@ -22,12 +22,17 @@ import java.util.*;
  * Created by agua on 30/06/15.
  */
 public class FileWorkbook {
+    public final int FILE_CREATED = 0;
+    public final int FILE_UPDATED = 1;
+    public final int FILE_ERROR = 2;
+
+
     File mLibroDiarioFile = new File("Contabilidad.xlsx");
     XSSFWorkbook mWorkbook;
     CicloContable mCicloContable;
 
 
-    public void saveWorkBook() {
+    public int saveWorkBook() {
         try {
             //Create a new workbook
             if (!mLibroDiarioFile.exists()) {
@@ -37,6 +42,8 @@ public class FileWorkbook {
                 mWorkbook = mCicloContable.getFirstWorkBook();
 
                 createFile();
+
+                return FILE_CREATED;
             } else {
                 //Open the workbook
                 FileInputStream file = new FileInputStream(mLibroDiarioFile);
@@ -49,11 +56,14 @@ public class FileWorkbook {
                 mWorkbook = mCicloContable.getCicloContable();
 
                 createFile();
+
+                return FILE_UPDATED;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return FILE_ERROR;
     }
 
     private void createFile() throws Exception{
