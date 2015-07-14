@@ -25,10 +25,6 @@ public class BalanceDeComprobacion {
         mElementosBalance = new ArrayList<>();
     }
 
-    public void addElementoBalance(ElementoBalanceDeComprobacion elementoBalanceDeComprobacion) {
-        mElementosBalance.add(elementoBalanceDeComprobacion);
-    }
-
     public List<ElementoBalanceDeComprobacion> getElementosBalance() {
         return mElementosBalance;
     }

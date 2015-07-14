@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by agua on 09/07/15.
  */
 public class Machine {
-    private FileWorkbook mFileWorkbook = new FileWorkbook();
+    /*private FileWorkbook mFileWorkbook = new FileWorkbook();
     private BufferedReader mReader;
     private Map<String, String> mMenu;
 
@@ -68,6 +68,6 @@ public class Machine {
                 e.printStackTrace();
             }
         } while(!choice.equalsIgnoreCase("salir"));
-    }
+    }*/
 
 }
