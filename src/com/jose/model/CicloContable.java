@@ -43,7 +43,8 @@ public class CicloContable {
 
         //Generate sheets on workbook
         createLibroMayorSheet();
-        //TODO: Create balance de comprobacion sheet
+        createBalanceDeComprobacionSheet();
+        //TODO: Estados financieros finales sheet
 
 
         return mWorkbook;
@@ -479,6 +480,62 @@ public class CicloContable {
             rowCounter += 3;
 
         }
+    }
+
+    private void createBalanceDeComprobacionSheet() {
+        //Create sheet for "Libro Mayor"
+        XSSFSheet sheet;
+        try {
+            sheet = mWorkbook.createSheet("Balance de Comprobacion");
+        } catch (Exception e) {
+            mWorkbook.removeSheetAt(2);
+            sheet = mWorkbook.createSheet("Balance de Comprobacion");
+        }
+
+        int rowCounter = 0;
+
+        Row row = sheet.createRow(rowCounter);
+        Cell cell = row.createCell((short) 0);
+        createCell(mWorkbook, row, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        sheet.addMergedRegion(new CellRangeAddress(
+                rowCounter, //first row (0-based)
+                (rowCounter + 1), //last row  (0-based)
+                0, //first column (0-based)
+                7  //last column  (0-based)
+        ));
+        cell.setCellValue("Balance de comprobacion");
+        rowCounter += 2;
+
+        Row row1 = sheet.createRow(rowCounter);
+        row1.createCell((short) 0).setCellValue("No");
+        row1.createCell((short) 1).setCellValue("Codigo");
+        row1.createCell((short) 2).setCellValue("Cuenta");
+        row1.createCell((short) 3).setCellValue("Suma Debe");
+        row1.createCell((short) 4).setCellValue("Suma Haber");
+        row1.createCell((short) 5).setCellValue("Saldo Debe");
+        row1.createCell((short) 6).setCellValue("Saldo Haber");
+        rowCounter++;
+
+        for (ElementoBalanceDeComprobacion elemento : mBalanceDeComprobacion.getElementosBalance()) {
+            Row rowE = sheet.createRow(rowCounter);
+            rowE.createCell((short) 0).setCellValue(elemento.getNumero());
+            rowE.createCell((short) 1).setCellValue(elemento.getCodigo());
+            rowE.createCell((short) 2).setCellValue(elemento.getCuenta());
+            rowE.createCell((short) 3).setCellValue(elemento.getSumaDebe());
+            rowE.createCell((short) 4).setCellValue(elemento.getSumaHaber());
+            rowE.createCell((short) 5).setCellValue(elemento.getSaldoDebe());
+            rowE.createCell((short) 6).setCellValue(elemento.getSaldoHaber());
+            rowCounter++;
+        }
+
+        Row lastRow = sheet.createRow(rowCounter);
+        lastRow.createCell((short) 2).setCellValue("TOTALES");
+        lastRow.createCell((short) 3).setCellValue(mBalanceDeComprobacion.getTotalSumasDebe());
+        lastRow.createCell((short) 4).setCellValue(mBalanceDeComprobacion.getTotalSumasHaber());
+        lastRow.createCell((short) 5).setCellValue(mBalanceDeComprobacion.getTotalSaldosDebe());
+        lastRow.createCell((short) 6).setCellValue(mBalanceDeComprobacion.getTotalSaldosHaber());
+
+
     }
 
     private void createLibroMayor() {

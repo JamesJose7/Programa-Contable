@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9d40da4a-dfad-46a2-a5b1-c597377c7a6b" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/CicloContable.java" afterPath="$PROJECT_DIR$/src/EjecutarCicloContable.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/com/jose/model/Machine.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Contabilidad.xlsx" afterPath="$PROJECT_DIR$/Contabilidad.xlsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jose/model/balance_comprobacion/BalanceDeComprobacion.java" afterPath="$PROJECT_DIR$/src/com/jose/model/balance_comprobacion/BalanceDeComprobacion.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java" afterPath="$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jose/model/Machine.java" afterPath="$PROJECT_DIR$/src/com/jose/model/Machine.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jose/model/CicloContable.java" afterPath="$PROJECT_DIR$/src/com/jose/model/CicloContable.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/EjecutarCicloContable.java" afterPath="$PROJECT_DIR$/src/EjecutarCicloContable.java" />
     </list>
     <ignored path="Programa Contable.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,17 +21,37 @@
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="ElementoBalanceDeComprobacion.java" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/src/com/jose/model/balance_comprobacion/ElementoBalanceDeComprobacion.java">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.14091858">
+                    <caret line="9" column="29" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="29" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="Programa Contable" />
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="FileWorkbook.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="FileWorkbook.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="53" column="32" selection-start-line="53" selection-start-column="32" selection-end-line="53" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.3914405">
+              <caret line="36" column="41" selection-start-line="36" selection-start-column="41" selection-end-line="36" selection-end-column="41" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -58,7 +76,7 @@
         <entry file="file://$PROJECT_DIR$/src/com/jose/model/balance_comprobacion/BalanceDeComprobacion.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="10" column="31" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
+              <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#982#983#0" expanded="true" />
@@ -68,33 +86,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ElementoBalanceDeComprobacion.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/jose/model/balance_comprobacion/ElementoBalanceDeComprobacion.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6732777">
-              <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Machine.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/jose/model/Machine.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="70" column="7" selection-start-line="70" selection-start-column="7" selection-end-line="70" selection-end-column="7" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="CicloContable.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/jose/model/CicloContable.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="285" column="0" selection-start-line="285" selection-start-column="0" selection-end-line="285" selection-end-column="0" />
+              <caret line="501" column="17" selection-start-line="501" selection-start-column="17" selection-end-line="501" selection-end-column="17" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1217#1218#0" expanded="true" />
@@ -123,7 +119,16 @@
             <state vertical-scroll-proportion="0.0">
               <caret line="34" column="66" selection-start-line="34" selection-start-column="66" selection-end-line="34" selection-end-column="66" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#247#248#0" expanded="false" />
+                <element signature="e#289#290#0" expanded="false" />
+                <element signature="e#348#349#0" expanded="false" />
+                <element signature="e#392#393#0" expanded="false" />
+                <element signature="e#438#439#0" expanded="false" />
+                <element signature="e#481#482#0" expanded="false" />
+                <element signature="e#540#541#0" expanded="false" />
+                <element signature="e#574#575#0" expanded="false" />
+                <element signature="e#621#622#0" expanded="false" />
+                <element signature="e#652#653#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -133,10 +138,8 @@
         <entry file="file://$PROJECT_DIR$/src/EjecutarCicloContable.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -191,8 +194,8 @@
         <option value="$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java" />
         <option value="$PROJECT_DIR$/src/EjecutarCicloContable.java" />
         <option value="$PROJECT_DIR$/src/com/jose/model/Machine.java" />
-        <option value="$PROJECT_DIR$/src/com/jose/model/CicloContable.java" />
         <option value="$PROJECT_DIR$/src/com/jose/model/balance_comprobacion/BalanceDeComprobacion.java" />
+        <option value="$PROJECT_DIR$/src/com/jose/model/CicloContable.java" />
       </list>
     </option>
   </component>
@@ -672,16 +675,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jose/model/Machine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="57" column="30" selection-start-line="57" selection-start-column="30" selection-end-line="57" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/jose/model/libro_mayor/LibroMayor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -716,7 +709,16 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="34" column="66" selection-start-line="34" selection-start-column="66" selection-end-line="34" selection-end-column="66" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#247#248#0" expanded="false" />
+            <element signature="e#289#290#0" expanded="false" />
+            <element signature="e#348#349#0" expanded="false" />
+            <element signature="e#392#393#0" expanded="false" />
+            <element signature="e#438#439#0" expanded="false" />
+            <element signature="e#481#482#0" expanded="false" />
+            <element signature="e#540#541#0" expanded="false" />
+            <element signature="e#574#575#0" expanded="false" />
+            <element signature="e#621#622#0" expanded="false" />
+            <element signature="e#652#653#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -725,9 +727,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="10" column="22" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -797,7 +797,16 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="34" column="66" selection-start-line="34" selection-start-column="66" selection-end-line="34" selection-end-column="66" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#247#248#0" expanded="false" />
+            <element signature="e#289#290#0" expanded="false" />
+            <element signature="e#348#349#0" expanded="false" />
+            <element signature="e#392#393#0" expanded="false" />
+            <element signature="e#438#439#0" expanded="false" />
+            <element signature="e#481#482#0" expanded="false" />
+            <element signature="e#540#541#0" expanded="false" />
+            <element signature="e#574#575#0" expanded="false" />
+            <element signature="e#621#622#0" expanded="false" />
+            <element signature="e#652#653#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -806,9 +815,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="1" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -849,7 +856,16 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="34" column="66" selection-start-line="34" selection-start-column="66" selection-end-line="34" selection-end-column="66" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#247#248#0" expanded="false" />
+            <element signature="e#289#290#0" expanded="false" />
+            <element signature="e#348#349#0" expanded="false" />
+            <element signature="e#392#393#0" expanded="false" />
+            <element signature="e#438#439#0" expanded="false" />
+            <element signature="e#481#482#0" expanded="false" />
+            <element signature="e#540#541#0" expanded="false" />
+            <element signature="e#574#575#0" expanded="false" />
+            <element signature="e#621#622#0" expanded="false" />
+            <element signature="e#652#653#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -858,9 +874,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="1" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -901,7 +915,16 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="34" column="66" selection-start-line="34" selection-start-column="66" selection-end-line="34" selection-end-column="66" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#247#248#0" expanded="false" />
+            <element signature="e#289#290#0" expanded="false" />
+            <element signature="e#348#349#0" expanded="false" />
+            <element signature="e#392#393#0" expanded="false" />
+            <element signature="e#438#439#0" expanded="false" />
+            <element signature="e#481#482#0" expanded="false" />
+            <element signature="e#540#541#0" expanded="false" />
+            <element signature="e#574#575#0" expanded="false" />
+            <element signature="e#621#622#0" expanded="false" />
+            <element signature="e#652#653#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -910,9 +933,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="1" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -964,7 +985,16 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="34" column="66" selection-start-line="34" selection-start-column="66" selection-end-line="34" selection-end-column="66" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#247#248#0" expanded="false" />
+            <element signature="e#289#290#0" expanded="false" />
+            <element signature="e#348#349#0" expanded="false" />
+            <element signature="e#392#393#0" expanded="false" />
+            <element signature="e#438#439#0" expanded="false" />
+            <element signature="e#481#482#0" expanded="false" />
+            <element signature="e#540#541#0" expanded="false" />
+            <element signature="e#574#575#0" expanded="false" />
+            <element signature="e#621#622#0" expanded="false" />
+            <element signature="e#652#653#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1002,52 +1032,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/EjecutarCicloContable.java">
+    <entry file="file://$PROJECT_DIR$/src/com/jose/model/balance_comprobacion/ElementoBalanceDeComprobacion.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jose/model/Machine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="70" column="7" selection-start-line="70" selection-start-column="7" selection-end-line="70" selection-end-column="7" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="53" column="32" selection-start-line="53" selection-start-column="32" selection-end-line="53" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jose/model/CicloContable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="285" column="0" selection-start-line="285" selection-start-column="0" selection-end-line="285" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1217#1218#0" expanded="true" />
-            <element signature="e#1253#1254#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.14091858">
+          <caret line="9" column="29" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="29" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/jose/model/balance_comprobacion/BalanceDeComprobacion.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="10" column="31" selection-start-line="10" selection-start-column="31" selection-end-line="10" selection-end-column="31" />
+          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#982#983#0" expanded="true" />
@@ -1056,11 +1052,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jose/model/balance_comprobacion/ElementoBalanceDeComprobacion.java">
+    <entry file="file://$PROJECT_DIR$/src/com/jose/model/CicloContable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6732777">
-          <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="501" column="17" selection-start-line="501" selection-start-column="17" selection-end-line="501" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1217#1218#0" expanded="true" />
+            <element signature="e#1253#1254#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/EjecutarCicloContable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jose/model/FileWorkbook.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3914405">
+          <caret line="36" column="41" selection-start-line="36" selection-start-column="41" selection-end-line="36" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
