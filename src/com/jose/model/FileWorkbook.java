@@ -1,22 +1,11 @@
 package com.jose.model;
 
-import com.jose.model.balance_comprobacion.BalanceDeComprobacion;
-import com.jose.model.balance_comprobacion.ElementoBalanceDeComprobacion;
-import com.jose.model.libro_diario.Asiento;
-import com.jose.model.libro_diario.LibroDiario;
-import com.jose.model.plan_de_cuentas.PlanDeCuentas;
-import com.jose.model.libro_mayor.ElementoMayor;
-import com.jose.model.libro_mayor.LibroMayor;
-import com.jose.model.libro_mayor.LibrosMayores;
-import org.apache.poi.hssf.util.CellRangeAddress;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.*;
 
 /**
  * Created by agua on 30/06/15.
@@ -41,7 +30,7 @@ public class FileWorkbook {
 
                 mWorkbook = mCicloContable.getFirstWorkBook();
 
-                createFile();
+                writeToFile();
 
                 return FILE_CREATED;
             } else {
@@ -55,7 +44,7 @@ public class FileWorkbook {
 
                 mWorkbook = mCicloContable.getCicloContable();
 
-                createFile();
+                writeToFile();
 
                 return FILE_UPDATED;
             }
@@ -66,13 +55,13 @@ public class FileWorkbook {
         return FILE_ERROR;
     }
 
-    private void createFile() throws Exception{
+    private void writeToFile() throws Exception{
         //create a new file
         FileOutputStream fos = new FileOutputStream(mLibroDiarioFile);
         //write workBook
         mWorkbook.write(fos);
         fos.close();
-        System.out.println("File created");
+        System.out.println("File written");
     }
 
 

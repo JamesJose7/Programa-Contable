@@ -16,7 +16,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileInputStream;
 import java.util.*;
 
 /**
@@ -46,7 +45,6 @@ public class CicloContable {
         createBalanceDeComprobacionSheet();
         //TODO: Estados financieros finales sheet
 
-
         return mWorkbook;
     }
 
@@ -62,59 +60,6 @@ public class CicloContable {
         printPlanDeCuentas();
         printLibrosMayores();
         printBalanceComprobacion();
-    }
-
-    private void readPlanDeCuentasSheet() {
-        XSSFSheet sheet = mWorkbook.getSheetAt(1);
-
-
-        //Iterate through rows
-        Iterator<Row> rowIterator = sheet.iterator();
-
-        while (rowIterator.hasNext()) {
-
-            Row row = rowIterator.next();
-
-            //Iterate through cells
-            Iterator<Cell> cellIterator = row.cellIterator();
-
-            //Temporal variables for each row
-            String codigo = "";
-            String cuenta = "";
-
-            while (cellIterator.hasNext()) {
-                Cell cell = cellIterator.next();
-
-                //Check cell types
-                switch (cell.getCellType()) {
-                    case Cell.CELL_TYPE_NUMERIC:
-                        if (row.getRowNum() > 1) {
-                            //Store values
-
-                        }
-                        break;
-                    case Cell.CELL_TYPE_STRING:
-                        if (row.getRowNum() > 4) {
-                            if (!cell.getStringCellValue().equals("Estado de Resultado Integral")) {
-                                //Store values
-                                switch (cell.getColumnIndex()) {
-                                    case 0:
-                                        codigo = cell.getStringCellValue();
-                                        break;
-                                    case 1:
-                                        cuenta = cell.getStringCellValue().toUpperCase().trim();
-                                        break;
-                                }
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            mPlanDeCuentas.addCuenta(codigo, cuenta);
-        }
-        mPlanDeCuentas.getCuentas().remove("");
     }
 
     private void readLibroDiarioSheet() {
@@ -237,171 +182,158 @@ public class CicloContable {
 
     }
 
-    private void createPlanDeCuentasSheet() {
-        XSSFSheet sheet = mWorkbook.createSheet("Plan de Cuentas");
+    private void readPlanDeCuentasSheet() {
+        XSSFSheet sheet = mWorkbook.getSheetAt(1);
 
-        //Data to be written
-        Row row = sheet.createRow((short) 0);
-        Cell cell = row.createCell((short) 0);
-        createCell(mWorkbook, row, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
-        cell.setCellValue("Plan de cuentas");
 
-        Row row1 = sheet.createRow((short) 1);
-        row1.createCell((short) 0);
+        //Iterate through rows
+        Iterator<Row> rowIterator = sheet.iterator();
 
-        sheet.addMergedRegion(new CellRangeAddress(
-                0, //first row (0-based)
-                1, //last row  (0-based)
-                0, //first column (0-based)
-                4  //last column  (0-based)
-        ));
+        while (rowIterator.hasNext()) {
 
-        Row row3 = sheet.createRow((short) 3);
-        Cell cell31 = row3.createCell((short) 0);
-        createCell(mWorkbook, row3, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
-        cell31.setCellValue("Estado de Situación Financiera");
+            Row row = rowIterator.next();
 
-        sheet.addMergedRegion(new CellRangeAddress(
-                3, //first row (0-based)
-                3, //last row  (0-based)
-                0, //first column (0-based)
-                4  //last column  (0-based)
-        ));
+            //Iterate through cells
+            Iterator<Cell> cellIterator = row.cellIterator();
 
-        sheet.createRow((short) 4);
-        Row row5 = sheet.createRow((short) 5);
-        Cell cell51 = row5.createCell((short) 0);
-        Cell cell52 = row5.createCell((short) 1);
-        Row row6 = sheet.createRow((short) 6);
-        Cell cell61 = row6.createCell((short) 0);
-        Cell cell62 = row6.createCell((short) 1);
+            //Temporal variables for each row
+            String codigo = "";
+            String cuenta = "";
 
-        cell51.setCellValue("1.");
-        cell52.setCellValue("ACTIVO");
-        cell61.setCellValue("1.1");
-        cell62.setCellValue("ACTIVO CORRIENTE");
+            while (cellIterator.hasNext()) {
+                Cell cell = cellIterator.next();
 
-        Row row12 = sheet.createRow((short) 12);
-        Cell cell121 = row12.createCell((short) 0);
-        Cell cell122 = row12.createCell((short) 1);
+                //Check cell types
+                switch (cell.getCellType()) {
+                    case Cell.CELL_TYPE_NUMERIC:
+                        if (row.getRowNum() > 1) {
+                            //Store values
 
-        cell121.setCellValue("1.2");
-        cell122.setCellValue("ACTIVO NO CORRIENTE");
-
-        Row row19 = sheet.createRow((short) 19);
-        Cell cell191 = row19.createCell((short) 0);
-        Cell cell192 = row19.createCell((short) 1);
-        Row row20 = sheet.createRow((short) 20);
-        Cell cell201 = row20.createCell((short) 0);
-        Cell cell202 = row20.createCell((short) 1);
-
-        cell191.setCellValue("2.");
-        cell192.setCellValue("PASIVO");
-        cell201.setCellValue("2.1");
-        cell202.setCellValue("PASIVO CORRIENTE");
-
-        Row row26 = sheet.createRow((short) 26);
-        Cell cell261 = row26.createCell((short) 0);
-        Cell cell262 = row26.createCell((short) 1);
-
-        cell261.setCellValue("2.2");
-        cell262.setCellValue("PASIVO NO CORRIENTE");
-
-        Row row32 = sheet.createRow((short) 32);
-        Cell cell321 = row32.createCell((short) 0);
-        Cell cell322 = row32.createCell((short) 1);
-
-        cell321.setCellValue("3.");
-        cell322.setCellValue("PATRIMONIO");
-
-        Row row34 = sheet.createRow((short) 34);
-        Cell cell341 = row34.createCell((short) 0);
-        createCell(mWorkbook, row34, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
-        cell341.setCellValue("Estado de Resultado Integral");
-
-        sheet.addMergedRegion(new CellRangeAddress(
-                34, //first row (0-based)
-                34, //last row  (0-based)
-                0, //first column (0-based)
-                4  //last column  (0-based)
-        ));
-
-        Row row36 = sheet.createRow((short) 36);
-        Cell cell361 = row36.createCell((short) 0);
-        Cell cell362 = row36.createCell((short) 1);
-        Row row37 = sheet.createRow((short) 37);
-        Cell cell371 = row37.createCell((short) 0);
-        Cell cell372 = row37.createCell((short) 1);
-
-        cell361.setCellValue("4.");
-        cell362.setCellValue("INGRESOS");
-        cell371.setCellValue("4.1");
-        cell372.setCellValue("INGRESOS OPERACIONALES");
-
-        Row row42 = sheet.createRow((short) 42);
-        Cell cell421 = row42.createCell((short) 0);
-        Cell cell422 = row42.createCell((short) 1);
-
-        cell421.setCellValue("4.2");
-        cell422.setCellValue("INGRESOS NO OPERACIONALES");
-
-        Row row47 = sheet.createRow((short) 47);
-        Cell cell471 = row47.createCell((short) 0);
-        Cell cell472 = row47.createCell((short) 1);
-        Row row48 = sheet.createRow((short) 48);
-        Cell cell481 = row48.createCell((short) 0);
-        Cell cell482 = row48.createCell((short) 1);
-
-        cell471.setCellValue("5.");
-        cell472.setCellValue("GASTOS");
-        cell481.setCellValue("5.1");
-        cell482.setCellValue("GASTOS OPERACIONALES");
-
-        Row row53 = sheet.createRow((short) 53);
-        Cell cell531 = row53.createCell((short) 0);
-        Cell cell532 = row53.createCell((short) 1);
-
-        cell531.setCellValue("5.2");
-        cell532.setCellValue("GASTOS NO OPERACIONALES");
-
+                        }
+                        break;
+                    case Cell.CELL_TYPE_STRING:
+                        if (row.getRowNum() > 4) {
+                            if (!cell.getStringCellValue().equals("Estado de Resultado Integral")) {
+                                //Store values
+                                switch (cell.getColumnIndex()) {
+                                    case 0:
+                                        codigo = cell.getStringCellValue();
+                                        break;
+                                    case 1:
+                                        cuenta = cell.getStringCellValue().toUpperCase().trim();
+                                        break;
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            mPlanDeCuentas.addCuenta(codigo, cuenta);
+        }
+        mPlanDeCuentas.getCuentas().remove("");
     }
 
+    private void createLibroMayor() {
+        for (Map.Entry<String, String> entry : mPlanDeCuentas.getCuentas().entrySet()) {
+            LibroMayor libroMayor;
+            List<ElementoMayor> elementosMayoresList = new ArrayList<>();
+            double saldo = 0;
+            double totalDebe = 0;
+            double totalHaber = 0;
+            boolean cuentaExists = false;
 
+            String cuenta = entry.getValue();
+            ElementoMayor elementoMayor;
 
+            for (Asiento asiento : mLibroDiario.getAsientos()) {
 
+                for (Map.Entry<String, Double> entryDebe : asiento.getDebitos().entrySet()) {
+                    if (entryDebe.getKey().equalsIgnoreCase(cuenta)) {
+                        saldo += entryDebe.getValue();
+                        totalDebe += entryDebe.getValue();
 
-    private void createLibroDiarioSheet() {
+                        elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
+                                entryDebe.getValue(), 0, saldo);
 
-        //Create sheet for "Libro diario"
-        XSSFSheet sheet = mWorkbook.createSheet("Libro Diario");
+                        elementosMayoresList.add(elementoMayor);
 
-        //Data to be written
+                        cuentaExists = true;
+                    }
+                }
 
-        Row row = sheet.createRow((short) 0);
-        Cell cell = row.createCell((short) 0);
-        createCell(mWorkbook, row, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
-        cell.setCellValue("Libro Diario");
+                for (Map.Entry<String, Double> entryHaber : asiento.getCreditos().entrySet()) {
+                    if (entryHaber.getKey().equalsIgnoreCase(cuenta)) {
+                        saldo -= entryHaber.getValue();
 
-        Row row2 = sheet.createRow((short) 1);
-        Cell cell2 = row2.createCell((short) 0);
-        Cell cell3 = row2.createCell((short) 1);
-        Cell cell4 = row2.createCell((short) 2);
-        Cell cell5 = row2.createCell((short) 3);
-        Cell cell6 = row2.createCell((short) 4);
+                        totalHaber += entryHaber.getValue();
 
-        cell2.setCellValue("Fecha");
-        cell3.setCellValue("Nombre de Cuentas");
-        cell4.setCellValue("");
-        cell5.setCellValue("Debitos");
-        cell6.setCellValue("Creditos");
+                        elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
+                                0, entryHaber.getValue(), saldo);
 
-        sheet.addMergedRegion(new CellRangeAddress(
-                0, //first row (0-based)
-                0, //last row  (0-based)
-                0, //first column (0-based)
-                4  //last column  (0-based)
-        ));
+                        elementosMayoresList.add(elementoMayor);
 
+                        cuentaExists = true;
+                    }
+                }
+            }
+
+            if (cuentaExists) {
+                elementoMayor = new ElementoMayor("TOTAL", "", 0, totalDebe, totalHaber, Math.abs(saldo));
+                elementosMayoresList.add(elementoMayor);
+
+                libroMayor = new LibroMayor(cuenta, entry.getKey(), elementosMayoresList);
+
+                mLibrosMayores.addLibroMayor(libroMayor);
+            }
+
+        }
+    }
+
+    private void createBalanceDeComprobacion() {
+        int counter = 1;
+
+        List<ElementoBalanceDeComprobacion> elementosList = new ArrayList<>();
+
+        double totalSumasDebe = 0;
+        double totalSumasHaber = 0;
+        double totalSaldosDebe = 0;
+        double totalSaldosHaber = 0;
+
+        for (LibroMayor libroMayor : mLibrosMayores.getLibrosMayoresList()) {
+            ElementoBalanceDeComprobacion elementoBalanceDeComprobacion;
+
+            double saldoDebe;
+            double saldoHaber;
+
+            ElementoMayor ultimoElemento = libroMayor.getElementosMayores().get(libroMayor.getElementosMayores().size() - 1);
+
+            if (ultimoElemento.getDebe() > ultimoElemento.getHaber()) {
+                saldoDebe = ultimoElemento.getSaldo();
+                saldoHaber = 0;
+            } else {
+                saldoDebe = 0;
+                saldoHaber = ultimoElemento.getSaldo();
+            }
+
+            elementoBalanceDeComprobacion = new ElementoBalanceDeComprobacion(counter, libroMayor.getCodigo(), libroMayor.getCuenta(),
+                    ultimoElemento.getDebe(), ultimoElemento.getHaber(), saldoDebe, saldoHaber);
+
+            elementosList.add(elementoBalanceDeComprobacion);
+
+            totalSumasDebe += ultimoElemento.getDebe();
+            totalSumasHaber += ultimoElemento.getHaber();
+            totalSaldosDebe += saldoDebe;
+            totalSaldosHaber += saldoHaber;
+
+            counter++;
+        }
+        mBalanceDeComprobacion.setElementosBalance(elementosList);
+        mBalanceDeComprobacion.setTotalSaldosDebe(totalSaldosDebe);
+        mBalanceDeComprobacion.setTotalSaldosHaber(totalSaldosHaber);
+        mBalanceDeComprobacion.setTotalSumasDebe(totalSumasDebe);
+        mBalanceDeComprobacion.setTotalSumasHaber(totalSumasHaber);
 
     }
 
@@ -538,128 +470,185 @@ public class CicloContable {
 
     }
 
-    private void createLibroMayor() {
+    private void createLibroDiarioSheet() {
+
+        //Create sheet for "Libro diario"
+        XSSFSheet sheet = mWorkbook.createSheet("Libro Diario");
+
+        //Data to be written
+
+        Row row = sheet.createRow((short) 0);
+        Cell cell = row.createCell((short) 0);
+        createCell(mWorkbook, row, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        cell.setCellValue("Libro Diario");
+
+        Row row2 = sheet.createRow((short) 1);
+        Cell cell2 = row2.createCell((short) 0);
+        Cell cell3 = row2.createCell((short) 1);
+        Cell cell4 = row2.createCell((short) 2);
+        Cell cell5 = row2.createCell((short) 3);
+        Cell cell6 = row2.createCell((short) 4);
+
+        cell2.setCellValue("Fecha");
+        cell3.setCellValue("Nombre de Cuentas");
+        cell4.setCellValue("");
+        cell5.setCellValue("Debitos");
+        cell6.setCellValue("Creditos");
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row (0-based)
+                0, //last row  (0-based)
+                0, //first column (0-based)
+                4  //last column  (0-based)
+        ));
+
+    }
+
+    private void createPlanDeCuentasSheet() {
+        XSSFSheet sheet = mWorkbook.createSheet("Plan de Cuentas");
+
+        //Data to be written
+        Row row = sheet.createRow((short) 0);
+        Cell cell = row.createCell((short) 0);
+        createCell(mWorkbook, row, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        cell.setCellValue("Plan de cuentas");
+
+        Row row1 = sheet.createRow((short) 1);
+        row1.createCell((short) 0);
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                0, //first row (0-based)
+                1, //last row  (0-based)
+                0, //first column (0-based)
+                4  //last column  (0-based)
+        ));
+
+        Row row3 = sheet.createRow((short) 3);
+        Cell cell31 = row3.createCell((short) 0);
+        createCell(mWorkbook, row3, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        cell31.setCellValue("Estado de Situación Financiera");
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                3, //first row (0-based)
+                3, //last row  (0-based)
+                0, //first column (0-based)
+                4  //last column  (0-based)
+        ));
+
+        sheet.createRow((short) 4);
+        Row row5 = sheet.createRow((short) 5);
+        Cell cell51 = row5.createCell((short) 0);
+        Cell cell52 = row5.createCell((short) 1);
+        Row row6 = sheet.createRow((short) 6);
+        Cell cell61 = row6.createCell((short) 0);
+        Cell cell62 = row6.createCell((short) 1);
+
+        cell51.setCellValue("1.");
+        cell52.setCellValue("ACTIVO");
+        cell61.setCellValue("1.1");
+        cell62.setCellValue("ACTIVO CORRIENTE");
+
+        Row row12 = sheet.createRow((short) 12);
+        Cell cell121 = row12.createCell((short) 0);
+        Cell cell122 = row12.createCell((short) 1);
+
+        cell121.setCellValue("1.2");
+        cell122.setCellValue("ACTIVO NO CORRIENTE");
+
+        Row row19 = sheet.createRow((short) 19);
+        Cell cell191 = row19.createCell((short) 0);
+        Cell cell192 = row19.createCell((short) 1);
+        Row row20 = sheet.createRow((short) 20);
+        Cell cell201 = row20.createCell((short) 0);
+        Cell cell202 = row20.createCell((short) 1);
+
+        cell191.setCellValue("2.");
+        cell192.setCellValue("PASIVO");
+        cell201.setCellValue("2.1");
+        cell202.setCellValue("PASIVO CORRIENTE");
+
+        Row row26 = sheet.createRow((short) 26);
+        Cell cell261 = row26.createCell((short) 0);
+        Cell cell262 = row26.createCell((short) 1);
+
+        cell261.setCellValue("2.2");
+        cell262.setCellValue("PASIVO NO CORRIENTE");
+
+        Row row32 = sheet.createRow((short) 32);
+        Cell cell321 = row32.createCell((short) 0);
+        Cell cell322 = row32.createCell((short) 1);
+
+        cell321.setCellValue("3.");
+        cell322.setCellValue("PATRIMONIO");
+
+        Row row34 = sheet.createRow((short) 34);
+        Cell cell341 = row34.createCell((short) 0);
+        createCell(mWorkbook, row34, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        cell341.setCellValue("Estado de Resultado Integral");
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                34, //first row (0-based)
+                34, //last row  (0-based)
+                0, //first column (0-based)
+                4  //last column  (0-based)
+        ));
+
+        Row row36 = sheet.createRow((short) 36);
+        Cell cell361 = row36.createCell((short) 0);
+        Cell cell362 = row36.createCell((short) 1);
+        Row row37 = sheet.createRow((short) 37);
+        Cell cell371 = row37.createCell((short) 0);
+        Cell cell372 = row37.createCell((short) 1);
+
+        cell361.setCellValue("4.");
+        cell362.setCellValue("INGRESOS");
+        cell371.setCellValue("4.1");
+        cell372.setCellValue("INGRESOS OPERACIONALES");
+
+        Row row42 = sheet.createRow((short) 42);
+        Cell cell421 = row42.createCell((short) 0);
+        Cell cell422 = row42.createCell((short) 1);
+
+        cell421.setCellValue("4.2");
+        cell422.setCellValue("INGRESOS NO OPERACIONALES");
+
+        Row row47 = sheet.createRow((short) 47);
+        Cell cell471 = row47.createCell((short) 0);
+        Cell cell472 = row47.createCell((short) 1);
+        Row row48 = sheet.createRow((short) 48);
+        Cell cell481 = row48.createCell((short) 0);
+        Cell cell482 = row48.createCell((short) 1);
+
+        cell471.setCellValue("5.");
+        cell472.setCellValue("GASTOS");
+        cell481.setCellValue("5.1");
+        cell482.setCellValue("GASTOS OPERACIONALES");
+
+        Row row53 = sheet.createRow((short) 53);
+        Cell cell531 = row53.createCell((short) 0);
+        Cell cell532 = row53.createCell((short) 1);
+
+        cell531.setCellValue("5.2");
+        cell532.setCellValue("GASTOS NO OPERACIONALES");
+
+    }
+
+    private void printLibroDiario() {
+        List<Asiento> asientoList = mLibroDiario.getAsientos();
+        for (Asiento asiento : asientoList) {
+            printAsiento(asiento);
+            System.out.println("\n");
+        }
+    }
+
+    private void printPlanDeCuentas() {
+        System.out.println("\n\n\n\nCUENTAS\n");
         for (Map.Entry<String, String> entry : mPlanDeCuentas.getCuentas().entrySet()) {
-            LibroMayor libroMayor;
-            List<ElementoMayor> elementosMayoresList = new ArrayList<>();
-            double saldo = 0;
-            double totalDebe = 0;
-            double totalHaber = 0;
-            boolean cuentaExists = false;
-
-            String cuenta = entry.getValue();
-            ElementoMayor elementoMayor;
-
-            for (Asiento asiento : mLibroDiario.getAsientos()) {
-
-                for (Map.Entry<String, Double> entryDebe : asiento.getDebitos().entrySet()) {
-                    if (entryDebe.getKey().equalsIgnoreCase(cuenta)) {
-                        saldo += entryDebe.getValue();
-                        totalDebe += entryDebe.getValue();
-
-                        elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
-                                entryDebe.getValue(), 0, saldo);
-
-                        elementosMayoresList.add(elementoMayor);
-
-                        cuentaExists = true;
-                    }
-                }
-
-                for (Map.Entry<String, Double> entryHaber : asiento.getCreditos().entrySet()) {
-                    if (entryHaber.getKey().equalsIgnoreCase(cuenta)) {
-                        saldo -= entryHaber.getValue();
-
-                        totalHaber += entryHaber.getValue();
-
-                        elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
-                                0, entryHaber.getValue(), saldo);
-
-                        elementosMayoresList.add(elementoMayor);
-
-                        cuentaExists = true;
-                    }
-                }
-            }
-
-            if (cuentaExists) {
-                elementoMayor = new ElementoMayor("TOTAL", "", 0, totalDebe, totalHaber, Math.abs(saldo));
-                elementosMayoresList.add(elementoMayor);
-
-                libroMayor = new LibroMayor(cuenta, entry.getKey(), elementosMayoresList);
-
-                mLibrosMayores.addLibroMayor(libroMayor);
-            }
+            System.out.printf("%8s | %s\n",
+                    entry.getKey(),
+                    entry.getValue());
 
         }
-    }
-
-    private void createBalanceDeComprobacion() {
-        int counter = 1;
-
-        List<ElementoBalanceDeComprobacion> elementosList = new ArrayList<>();
-
-        double totalSumasDebe = 0;
-        double totalSumasHaber = 0;
-        double totalSaldosDebe = 0;
-        double totalSaldosHaber = 0;
-
-        for (LibroMayor libroMayor : mLibrosMayores.getLibrosMayoresList()) {
-            ElementoBalanceDeComprobacion elementoBalanceDeComprobacion;
-
-            double saldoDebe;
-            double saldoHaber;
-
-            ElementoMayor ultimoElemento = libroMayor.getElementosMayores().get(libroMayor.getElementosMayores().size() - 1);
-
-            if (ultimoElemento.getDebe() > ultimoElemento.getHaber()) {
-                saldoDebe = ultimoElemento.getSaldo();
-                saldoHaber = 0;
-            } else {
-                saldoDebe = 0;
-                saldoHaber = ultimoElemento.getSaldo();
-            }
-
-            elementoBalanceDeComprobacion = new ElementoBalanceDeComprobacion(counter, libroMayor.getCodigo(), libroMayor.getCuenta(),
-                    ultimoElemento.getDebe(), ultimoElemento.getHaber(), saldoDebe, saldoHaber);
-
-            elementosList.add(elementoBalanceDeComprobacion);
-
-            totalSumasDebe += ultimoElemento.getDebe();
-            totalSumasHaber += ultimoElemento.getHaber();
-            totalSaldosDebe += saldoDebe;
-            totalSaldosHaber += saldoHaber;
-
-            counter++;
-        }
-        mBalanceDeComprobacion.setElementosBalance(elementosList);
-        mBalanceDeComprobacion.setTotalSaldosDebe(totalSaldosDebe);
-        mBalanceDeComprobacion.setTotalSaldosHaber(totalSaldosHaber);
-        mBalanceDeComprobacion.setTotalSumasDebe(totalSumasDebe);
-        mBalanceDeComprobacion.setTotalSumasHaber(totalSumasHaber);
-
-    }
-
-    private void printBalanceComprobacion() {
-        System.out.printf("| %2s | %8s | %-50s | %10s | %10s | %10s | %10s |\n",
-                "No", "Codigo", "Cuentas", "Debe", "Haber", "Debe", "Haber");
-        for (ElementoBalanceDeComprobacion elementoBalanceDeComprobacion : mBalanceDeComprobacion.getElementosBalance()) {
-            System.out.printf("| %2d | %8s | %-50s | %10.2f | %10.2f | %10.2f | %10.2f |\n",
-                    elementoBalanceDeComprobacion.getNumero(),
-                    elementoBalanceDeComprobacion.getCodigo(),
-                    elementoBalanceDeComprobacion.getCuenta(),
-                    elementoBalanceDeComprobacion.getSumaDebe(),
-                    elementoBalanceDeComprobacion.getSumaHaber(),
-                    elementoBalanceDeComprobacion.getSaldoDebe(),
-                    elementoBalanceDeComprobacion.getSaldoHaber());
-        }
-
-        System.out.printf("| %2s | %8s | %-50s | %10.2f | %10.2f | %10.2f | %10.2f |\n",
-                "", "", "TOTAL",
-                mBalanceDeComprobacion.getTotalSumasDebe(),
-                mBalanceDeComprobacion.getTotalSumasHaber(),
-                mBalanceDeComprobacion.getTotalSaldosDebe(),
-                mBalanceDeComprobacion.getTotalSaldosHaber());
     }
 
     private void printLibrosMayores() {
@@ -685,23 +674,28 @@ public class CicloContable {
         }
     }
 
-    private void printPlanDeCuentas() {
-        System.out.println("\n\n\n\nCUENTAS\n");
-        for (Map.Entry<String, String> entry : mPlanDeCuentas.getCuentas().entrySet()) {
-            System.out.printf("%8s | %s\n",
-                    entry.getKey(),
-                    entry.getValue());
-
+    private void printBalanceComprobacion() {
+        System.out.printf("| %2s | %8s | %-50s | %10s | %10s | %10s | %10s |\n",
+                "No", "Codigo", "Cuentas", "Debe", "Haber", "Debe", "Haber");
+        for (ElementoBalanceDeComprobacion elementoBalanceDeComprobacion : mBalanceDeComprobacion.getElementosBalance()) {
+            System.out.printf("| %2d | %8s | %-50s | %10.2f | %10.2f | %10.2f | %10.2f |\n",
+                    elementoBalanceDeComprobacion.getNumero(),
+                    elementoBalanceDeComprobacion.getCodigo(),
+                    elementoBalanceDeComprobacion.getCuenta(),
+                    elementoBalanceDeComprobacion.getSumaDebe(),
+                    elementoBalanceDeComprobacion.getSumaHaber(),
+                    elementoBalanceDeComprobacion.getSaldoDebe(),
+                    elementoBalanceDeComprobacion.getSaldoHaber());
         }
+
+        System.out.printf("| %2s | %8s | %-50s | %10.2f | %10.2f | %10.2f | %10.2f |\n",
+                "", "", "TOTAL",
+                mBalanceDeComprobacion.getTotalSumasDebe(),
+                mBalanceDeComprobacion.getTotalSumasHaber(),
+                mBalanceDeComprobacion.getTotalSaldosDebe(),
+                mBalanceDeComprobacion.getTotalSaldosHaber());
     }
 
-    private void printLibroDiario() {
-        List<Asiento> asientoList = mLibroDiario.getAsientos();
-        for (Asiento asiento : asientoList) {
-            printAsiento(asiento);
-            System.out.println("\n");
-        }
-    }
 
     private void printAsiento(Asiento asiento) {
         System.out.println("Fecha: " + asiento.getFecha());
