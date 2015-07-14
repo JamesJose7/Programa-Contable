@@ -16,7 +16,7 @@ public class FileWorkbook {
     public final int FILE_ERROR = 2;
 
 
-    File mLibroDiarioFile = new File("Contabilidad.xlsx");
+    File mLibroDiarioFile = new File("Excel/Contabilidad.xlsx");
     XSSFWorkbook mWorkbook;
     CicloContable mCicloContable;
 
