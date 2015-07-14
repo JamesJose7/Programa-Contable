@@ -488,6 +488,7 @@ public class CicloContable {
         Cell cell4 = row2.createCell((short) 2);
         Cell cell5 = row2.createCell((short) 3);
         Cell cell6 = row2.createCell((short) 4);
+        createCell(mWorkbook, row2, (short) 1, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
 
         cell2.setCellValue("Fecha");
         cell3.setCellValue("Nombre de Cuentas");
@@ -500,6 +501,13 @@ public class CicloContable {
                 0, //last row  (0-based)
                 0, //first column (0-based)
                 4  //last column  (0-based)
+        ));
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                1, //first row (0-based)
+                1, //last row  (0-based)
+                1, //first column (0-based)
+                2  //last column  (0-based)
         ));
 
     }
