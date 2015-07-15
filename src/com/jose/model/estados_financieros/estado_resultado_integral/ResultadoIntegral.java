@@ -1,18 +1,20 @@
 package com.jose.model.estados_financieros.estado_resultado_integral;
 
+import com.jose.model.estados_financieros.ElementoEF;
+
 import java.util.List;
 
 /**
  * Created by agua on 15/07/15.
  */
 public class ResultadoIntegral {
-    private List<ElementoRI> mIngresos;
-    private List<ElementoRI> mGastos;
+    private List<ElementoEF> mIngresos;
+    private List<ElementoEF> mGastos;
     private double mTotalIngresos;
     private double mTotalGastos;
     private double mUtilidad;
 
-    public ResultadoIntegral(List<ElementoRI> ingresos, List<ElementoRI> gastos, double totalIngresos, double totalGastos, double utilidad) {
+    public ResultadoIntegral(List<ElementoEF> ingresos, List<ElementoEF> gastos, double totalIngresos, double totalGastos, double utilidad) {
         mIngresos = ingresos;
         mGastos = gastos;
         mTotalIngresos = totalIngresos;
@@ -20,19 +22,19 @@ public class ResultadoIntegral {
         mUtilidad = utilidad;
     }
 
-    public List<ElementoRI> getIngresos() {
+    public List<ElementoEF> getIngresos() {
         return mIngresos;
     }
 
-    public void setIngresos(List<ElementoRI> ingresos) {
+    public void setIngresos(List<ElementoEF> ingresos) {
         mIngresos = ingresos;
     }
 
-    public List<ElementoRI> getGastos() {
+    public List<ElementoEF> getGastos() {
         return mGastos;
     }
 
-    public void setGastos(List<ElementoRI> gastos) {
+    public void setGastos(List<ElementoEF> gastos) {
         mGastos = gastos;
     }
 

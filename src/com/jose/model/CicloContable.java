@@ -2,8 +2,9 @@ package com.jose.model;
 
 import com.jose.model.balance_comprobacion.BalanceDeComprobacion;
 import com.jose.model.balance_comprobacion.ElementoBalanceDeComprobacion;
-import com.jose.model.estados_financieros.estado_resultado_integral.ElementoRI;
+import com.jose.model.estados_financieros.ElementoEF;
 import com.jose.model.estados_financieros.estado_resultado_integral.ResultadoIntegral;
+import com.jose.model.estados_financieros.estado_situacion_financiera.EstadoSituacionFinanciera;
 import com.jose.model.libro_diario.Asiento;
 import com.jose.model.libro_diario.LibroDiario;
 import com.jose.model.libro_mayor.ElementoMayor;
@@ -30,6 +31,7 @@ public class CicloContable {
     private LibrosMayores mLibrosMayores;
     private BalanceDeComprobacion mBalanceDeComprobacion = new BalanceDeComprobacion();
     private ResultadoIntegral mResultadoIntegral;
+    private EstadoSituacionFinanciera mEstadoSituacionFinanciera;
     private XSSFWorkbook mWorkbook;
 
     private DecimalFormat df = new DecimalFormat("#.00");
@@ -47,6 +49,7 @@ public class CicloContable {
         createLibroMayor();
         createBalanceDeComprobacion();
         createResultadoIntegral();
+        createEstadoSituacionFinanciera();
 
         //Generate sheets on workbook
         createBalanceDeComprobacionSheet();
@@ -55,7 +58,7 @@ public class CicloContable {
         createLibroMayor();
         createLibroMayorSheet();
         createResultadoIntegralSheet();
-        //TODO: Estados financieros finales sheet
+        createEstadoSituacionFinancieraSheet();
 
         //printData();
 
@@ -78,11 +81,12 @@ public class CicloContable {
 
     private void removeSheets() {
         try {
+            mWorkbook.removeSheetAt(5);
             mWorkbook.removeSheetAt(4);
             mWorkbook.removeSheetAt(3);
             mWorkbook.removeSheetAt(2);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -374,33 +378,33 @@ public class CicloContable {
     }
 
     private void createResultadoIntegral() {
-        List<ElementoRI> listIngresos = new ArrayList<>();
-        List<ElementoRI> listGastos = new ArrayList<>();
+        List<ElementoEF> listIngresos = new ArrayList<>();
+        List<ElementoEF> listGastos = new ArrayList<>();
 
         double totalIngresos = 0;
         double totalGastos = 0;
         double utilidad;
 
         for (ElementoBalanceDeComprobacion elemento : mBalanceDeComprobacion.getElementosBalance()) {
-            ElementoRI elementoRI;
+            ElementoEF elementoEF;
             //Add ingresos
             if (elemento.getCodigo().contains("4.1")) {
-                elementoRI = new ElementoRI(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoHaber());
-                listIngresos.add(elementoRI);
+                elementoEF = new ElementoEF(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoHaber());
+                listIngresos.add(elementoEF);
                 totalIngresos += elemento.getSaldoHaber();
             }
 
             //Add gastos
             if (elemento.getCodigo().contains("5.1")) {
-                elementoRI = new ElementoRI(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoDebe());
-                listGastos.add(elementoRI);
+                elementoEF = new ElementoEF(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoDebe());
+                listGastos.add(elementoEF);
                 totalGastos += elemento.getSaldoDebe();
             }
 
             //Add costo de venta
             if (elemento.getCodigo().contains("5.") && elemento.getCuenta().toLowerCase().contains("costo")) {
-                elementoRI = new ElementoRI(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoDebe());
-                listIngresos.add(elementoRI);
+                elementoEF = new ElementoEF(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoDebe());
+                listIngresos.add(elementoEF);
                 totalIngresos -= elemento.getSaldoDebe();
             }
         }
@@ -410,6 +414,242 @@ public class CicloContable {
         mResultadoIntegral = new ResultadoIntegral(listIngresos, listGastos, totalIngresos, totalGastos, utilidad);
 
 
+    }
+
+    private void createEstadoSituacionFinanciera() {
+        List<ElementoEF> listActivos = new ArrayList<>();
+        List<ElementoEF> listPasivos = new ArrayList<>();
+        List<ElementoEF> listPatrimonio = new ArrayList<>();
+
+        double totalActivoCorriente = 0;
+        double totalActivoNoCorriente = 0;
+        double totalPasivoCorriente = 0;
+        double totalPasivoNoCorriente = 0;
+        double totalPatrimonio = 0;
+        double totalPasivoPatrimonio;
+
+        for (ElementoBalanceDeComprobacion elemento : mBalanceDeComprobacion.getElementosBalance()) {
+            ElementoEF elementoEF;
+
+            //Add activos
+            //Activo corriente
+            if (elemento.getCodigo().contains("1.1") && !elemento.getCodigo().contains("5.1")) {
+                if (elemento.getSaldoDebe() != 0) {
+                    elementoEF = new ElementoEF(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoDebe());
+                    listActivos.add(elementoEF);
+                    totalActivoCorriente += elemento.getSaldoDebe();
+                }
+            }
+
+            //Activo no corriente
+            if (elemento.getCodigo().contains("1.2")) {
+                double tempValor;
+                if (elemento.getCuenta().toUpperCase().contains("DEPRECIACION")) {
+                    tempValor = elemento.getSaldoHaber() * -1;
+                } else {
+                    tempValor = elemento.getSaldoDebe();
+                }
+
+                elementoEF = new ElementoEF(elemento.getCodigo(), elemento.getCuenta(), tempValor);
+                listActivos.add(elementoEF);
+                totalActivoNoCorriente += tempValor;
+            }
+
+            //Add pasivos
+            //Pasivo Corriente
+            if (elemento.getCodigo().contains("2.1") && elemento.getSaldoHaber() != 0) {
+                elementoEF = new ElementoEF(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoHaber());
+                listPasivos.add(elementoEF);
+                totalPasivoCorriente += elemento.getSaldoHaber();
+            }
+
+            //Pasivo No corriente
+            if (elemento.getCodigo().contains("2.2") && elemento.getSaldoHaber() != 0) {
+                elementoEF = new ElementoEF(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoHaber());
+                listPasivos.add(elementoEF);
+                totalPasivoNoCorriente += elemento.getSaldoHaber();
+            }
+
+            //Add Patrimonio
+            if (elemento.getCodigo().contains("3.1")) {
+                elementoEF = new ElementoEF(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoHaber());
+                listPatrimonio.add(elementoEF);
+                totalPatrimonio += elemento.getSaldoHaber();
+            }
+        }
+
+        totalPasivoPatrimonio = totalPasivoCorriente + totalPasivoNoCorriente + totalPatrimonio;
+
+        mEstadoSituacionFinanciera = new EstadoSituacionFinanciera(listActivos, listPasivos, listPatrimonio,
+                totalActivoCorriente, totalActivoNoCorriente, totalPasivoCorriente, totalPasivoNoCorriente,
+                totalPatrimonio, totalPasivoPatrimonio);
+
+    }
+
+    private void createEstadoSituacionFinancieraSheet() {
+        //Create sheet
+        XSSFSheet sheet = mWorkbook.createSheet("Estado de Situacion Financiera");
+
+        short rowCounter = 0;
+
+        //Headers
+        Row row = sheet.createRow(rowCounter);
+        Cell cell = row.createCell((short) 0);
+        createCell(mWorkbook, row, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        sheet.addMergedRegion(new CellRangeAddress(
+                rowCounter, //first row (0-based)
+                rowCounter, //last row  (0-based)
+                0, //first column (0-based)
+                3  //last column  (0-based)
+        ));
+        cell.setCellValue("Empresa \"X\"");
+        rowCounter++;
+
+        Row row1 = sheet.createRow(rowCounter);
+        Cell cell1 = row1.createCell((short) 0);
+        createCell(mWorkbook, row1, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        sheet.addMergedRegion(new CellRangeAddress(
+                rowCounter, //first row (0-based)
+                rowCounter, //last row  (0-based)
+                0, //first column (0-based)
+                3  //last column  (0-based)
+        ));
+        cell1.setCellValue("Estado de Resultado Integral");
+        rowCounter++;
+
+        Row row2 = sheet.createRow(rowCounter);
+        Cell cell2 = row2.createCell((short) 0);
+        createCell(mWorkbook, row2, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        sheet.addMergedRegion(new CellRangeAddress(
+                rowCounter, //first row (0-based)
+                rowCounter, //last row  (0-based)
+                0, //first column (0-based)
+                3  //last column  (0-based)
+        ));
+        cell2.setCellValue("01 - Junio a 30 Junio de 2015");
+        rowCounter++;
+
+        Row row3 = sheet.createRow(rowCounter);
+        row3.createCell(0).setCellValue("1.");
+        row3.createCell(1).setCellValue("Activo");
+        rowCounter++;
+
+        Row row4 = sheet.createRow(rowCounter);
+        row4.createCell(0).setCellValue("1.1");
+        row4.createCell(1).setCellValue("Activo Corriente");
+        rowCounter++;
+
+        for (ElementoEF elementoEF : mEstadoSituacionFinanciera.getActivos()) {
+            if (elementoEF.getCodigo().contains("1.1")) {
+                Row rowA = sheet.createRow(rowCounter);
+                rowA.createCell(0).setCellValue(elementoEF.getCodigo());
+                rowA.createCell(1).setCellValue(elementoEF.getCuenta());
+                rowA.createCell(2).setCellValue(formatDecimal(elementoEF.getValor()));
+                rowCounter++;
+            }
+        }
+
+        Row row5 = sheet.createRow(rowCounter);
+        row5.createCell(1).setCellValue("Total activo corriente");
+        row5.createCell(3).setCellValue(formatDecimal(mEstadoSituacionFinanciera.getTotalActivoCorriente()));
+        rowCounter += 2;
+
+        Row row6 = sheet.createRow(rowCounter);
+        row6.createCell(0).setCellValue("1.2.");
+        row6.createCell(1).setCellValue("Activo no Corriente");
+        rowCounter++;
+
+        for (ElementoEF elementoEF : mEstadoSituacionFinanciera.getActivos()) {
+            if (elementoEF.getCodigo().contains("1.2")) {
+                Row rowA = sheet.createRow(rowCounter);
+                rowA.createCell(0).setCellValue(elementoEF.getCodigo());
+                rowA.createCell(1).setCellValue(elementoEF.getCuenta());
+                rowA.createCell(2).setCellValue(formatDecimal(elementoEF.getValor()));
+                rowCounter++;
+            }
+        }
+
+        Row row7 = sheet.createRow(rowCounter);
+        row7.createCell(1).setCellValue("Total activo no corriente");
+        row7.createCell(3).setCellValue(formatDecimal(mEstadoSituacionFinanciera.getTotalActivoNoCorriente()));
+        rowCounter += 2;
+
+        Row row8 = sheet.createRow(rowCounter);
+        row8.createCell(1).setCellValue("TOTAL ACTIVO");
+        row8.createCell(3).setCellValue(formatDecimal(mEstadoSituacionFinanciera.getTotalActivoCorriente() + mEstadoSituacionFinanciera.getTotalActivoNoCorriente()));
+        rowCounter += 2;
+
+        Row row9 = sheet.createRow(rowCounter);
+        row9.createCell(0).setCellValue("2.");
+        row9.createCell(1).setCellValue("Pasivos");
+        rowCounter++;
+
+        Row row10 = sheet.createRow(rowCounter);
+        row10.createCell(0).setCellValue("2.1");
+        row10.createCell(1).setCellValue("Pasivos Corriente");
+        rowCounter++;
+
+        for (ElementoEF elementoEF : mEstadoSituacionFinanciera.getPasivos()) {
+            if (elementoEF.getCodigo().contains("2.1")) {
+                Row rowP = sheet.createRow(rowCounter);
+                rowP.createCell(0).setCellValue(elementoEF.getCodigo());
+                rowP.createCell(1).setCellValue(elementoEF.getCuenta());
+                rowP.createCell(2).setCellValue(formatDecimal(elementoEF.getValor()));
+                rowCounter++;
+            }
+        }
+
+        Row row11 = sheet.createRow(rowCounter);
+        row11.createCell(1).setCellValue("Total pasivo corriente");
+        row11.createCell(3).setCellValue(formatDecimal(mEstadoSituacionFinanciera.getTotalPasivoCorriente()));
+        rowCounter += 2;
+
+        Row row12 = sheet.createRow(rowCounter);
+        row12.createCell(0).setCellValue("2.2");
+        row12.createCell(1).setCellValue("Pasivo no Corriente");
+        rowCounter++;
+
+        for (ElementoEF elementoEF : mEstadoSituacionFinanciera.getPasivos()) {
+            if (elementoEF.getCodigo().contains("2.2")) {
+                Row rowP = sheet.createRow(rowCounter);
+                rowP.createCell(0).setCellValue(elementoEF.getCodigo());
+                rowP.createCell(1).setCellValue(elementoEF.getCuenta());
+                rowP.createCell(2).setCellValue(formatDecimal(elementoEF.getValor()));
+                rowCounter++;
+            }
+        }
+
+        Row row13 = sheet.createRow(rowCounter);
+        row13.createCell(1).setCellValue("Total pasivo no corriente");
+        row13.createCell(3).setCellValue(formatDecimal(mEstadoSituacionFinanciera.getTotalPasivoNoCorriente()));
+        rowCounter += 2;
+
+        Row row14 = sheet.createRow(rowCounter);
+        row14.createCell(1).setCellValue("TOTAL PASIVO");
+        row14.createCell(3).setCellValue(formatDecimal(mEstadoSituacionFinanciera.getTotalPasivoCorriente() + mEstadoSituacionFinanciera.getTotalPasivoNoCorriente()));
+        rowCounter += 2;
+
+        Row row15 = sheet.createRow(rowCounter);
+        row15.createCell(0).setCellValue("3.");
+        row15.createCell(1).setCellValue("Patrimonio");
+        rowCounter++;
+
+        for (ElementoEF elementoEF : mEstadoSituacionFinanciera.getPatrimonio()) {
+            Row rowPT = sheet.createRow(rowCounter);
+            rowPT.createCell(0).setCellValue(elementoEF.getCodigo());
+            rowPT.createCell(1).setCellValue(elementoEF.getCuenta());
+            rowPT.createCell(2).setCellValue(formatDecimal(elementoEF.getValor()));
+            rowCounter++;
+        }
+
+        Row row16 = sheet.createRow(rowCounter);
+        row16.createCell(1).setCellValue("Total patrimonio");
+        row16.createCell(3).setCellValue(formatDecimal(mEstadoSituacionFinanciera.getTotalPatrimonio()));
+        rowCounter += 2;
+
+        Row row17 = sheet.createRow(rowCounter);
+        row17.createCell(1).setCellValue("TOTAL PASIVO Y PATRIMONIO");
+        row17.createCell(3).setCellValue(formatDecimal(mEstadoSituacionFinanciera.getTotalPasivoPatrimonio()));
     }
 
     private void createResultadoIntegralSheet() {
@@ -460,11 +700,11 @@ public class CicloContable {
         row3.createCell(1).setCellValue("Ingresos");
         rowCounter++;
 
-        for (ElementoRI elementoRI : mResultadoIntegral.getIngresos()) {
+        for (ElementoEF elementoEF : mResultadoIntegral.getIngresos()) {
             Row rowI = sheet.createRow(rowCounter);
-            rowI.createCell(0).setCellValue(elementoRI.getCodigo());
-            rowI.createCell(1).setCellValue(elementoRI.getCuenta());
-            rowI.createCell(2).setCellValue(elementoRI.getValor());
+            rowI.createCell(0).setCellValue(elementoEF.getCodigo());
+            rowI.createCell(1).setCellValue(elementoEF.getCuenta());
+            rowI.createCell(2).setCellValue(elementoEF.getValor());
             rowCounter++;
         }
 
@@ -483,11 +723,11 @@ public class CicloContable {
         row6.createCell(1).setCellValue("Gastos Operativos");
         rowCounter++;
 
-        for (ElementoRI elementoRI : mResultadoIntegral.getGastos()) {
+        for (ElementoEF elementoEF : mResultadoIntegral.getGastos()) {
             Row rowG = sheet.createRow(rowCounter);
-            rowG.createCell(0).setCellValue(elementoRI.getCodigo());
-            rowG.createCell(1).setCellValue(elementoRI.getCuenta());
-            rowG.createCell(2).setCellValue(elementoRI.getValor());
+            rowG.createCell(0).setCellValue(elementoEF.getCodigo());
+            rowG.createCell(1).setCellValue(elementoEF.getCuenta());
+            rowG.createCell(2).setCellValue(elementoEF.getValor());
             rowCounter++;
         }
 

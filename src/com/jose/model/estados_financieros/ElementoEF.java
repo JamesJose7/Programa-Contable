@@ -1,14 +1,14 @@
-package com.jose.model.estados_financieros.estado_resultado_integral;
+package com.jose.model.estados_financieros;
 
 /**
  * Created by agua on 15/07/15.
  */
-public class ElementoRI {
+public class ElementoEF {
     private String mCodigo;
     private String mCuenta;
     private double mValor;
 
-    public ElementoRI(String codigo, String cuenta, double valor) {
+    public ElementoEF(String codigo, String cuenta, double valor) {
         mCodigo = codigo;
         mCuenta = cuenta;
         mValor = valor;
