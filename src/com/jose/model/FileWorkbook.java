@@ -55,7 +55,7 @@ public class FileWorkbook {
         return FILE_ERROR;
     }
 
-    private void writeToFile() throws Exception{
+    private void writeToFile() throws Exception {
         //create a new file
         FileOutputStream fos = new FileOutputStream(mLibroDiarioFile);
         //write workBook

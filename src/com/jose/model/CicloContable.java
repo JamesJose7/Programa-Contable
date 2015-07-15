@@ -2,6 +2,8 @@ package com.jose.model;
 
 import com.jose.model.balance_comprobacion.BalanceDeComprobacion;
 import com.jose.model.balance_comprobacion.ElementoBalanceDeComprobacion;
+import com.jose.model.estados_financieros.estado_resultado_integral.ElementoRI;
+import com.jose.model.estados_financieros.estado_resultado_integral.ResultadoIntegral;
 import com.jose.model.libro_diario.Asiento;
 import com.jose.model.libro_diario.LibroDiario;
 import com.jose.model.libro_mayor.ElementoMayor;
@@ -16,34 +18,46 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
  * Created by agua on 14/07/15.
  */
 public class CicloContable {
-    LibroDiario mLibroDiario = new LibroDiario();
-    PlanDeCuentas mPlanDeCuentas = new PlanDeCuentas();
-    LibrosMayores mLibrosMayores = new LibrosMayores();
-    BalanceDeComprobacion mBalanceDeComprobacion = new BalanceDeComprobacion();
-    XSSFWorkbook mWorkbook;
+    private LibroDiario mLibroDiario = new LibroDiario();
+    private PlanDeCuentas mPlanDeCuentas = new PlanDeCuentas();
+    private LibrosMayores mLibrosMayores;
+    private BalanceDeComprobacion mBalanceDeComprobacion = new BalanceDeComprobacion();
+    private ResultadoIntegral mResultadoIntegral;
+    private XSSFWorkbook mWorkbook;
+
+    private DecimalFormat df = new DecimalFormat("#.00");
+    private boolean mCerrarCuentas = false;
 
     public CicloContable(XSSFWorkbook workbook) {
         mWorkbook = workbook;
     }
 
     public XSSFWorkbook getCicloContable() {
+        removeSheets();
 
         readLibroDiarioSheet();
         readPlanDeCuentasSheet();
         createLibroMayor();
         createBalanceDeComprobacion();
-        //TODO: Estados financieros finales
+        createResultadoIntegral();
 
         //Generate sheets on workbook
-        createLibroMayorSheet();
         createBalanceDeComprobacionSheet();
+
+        //Libro mayor con cuentas en cero
+        createLibroMayor();
+        createLibroMayorSheet();
+        createResultadoIntegralSheet();
         //TODO: Estados financieros finales sheet
+
+        //printData();
 
         return mWorkbook;
     }
@@ -60,6 +74,16 @@ public class CicloContable {
         printPlanDeCuentas();
         printLibrosMayores();
         printBalanceComprobacion();
+    }
+
+    private void removeSheets() {
+        try {
+            mWorkbook.removeSheetAt(4);
+            mWorkbook.removeSheetAt(3);
+            mWorkbook.removeSheetAt(2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void readLibroDiarioSheet() {
@@ -236,6 +260,8 @@ public class CicloContable {
     }
 
     private void createLibroMayor() {
+        mLibrosMayores = new LibrosMayores();
+
         for (Map.Entry<String, String> entry : mPlanDeCuentas.getCuentas().entrySet()) {
             LibroMayor libroMayor;
             List<ElementoMayor> elementosMayoresList = new ArrayList<>();
@@ -249,33 +275,37 @@ public class CicloContable {
 
             for (Asiento asiento : mLibroDiario.getAsientos()) {
 
-                for (Map.Entry<String, Double> entryDebe : asiento.getDebitos().entrySet()) {
-                    if (entryDebe.getKey().equalsIgnoreCase(cuenta)) {
-                        saldo += entryDebe.getValue();
-                        totalDebe += entryDebe.getValue();
+                if (!(asiento.getRegistro().toLowerCase().contains("cierre")) || mCerrarCuentas) {
 
-                        elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
-                                entryDebe.getValue(), 0, saldo);
+                    for (Map.Entry<String, Double> entryDebe : asiento.getDebitos().entrySet()) {
+                        if (entryDebe.getKey().equalsIgnoreCase(cuenta)) {
+                            saldo += entryDebe.getValue();
+                            totalDebe += entryDebe.getValue();
 
-                        elementosMayoresList.add(elementoMayor);
+                            elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
+                                    entryDebe.getValue(), 0, saldo);
 
-                        cuentaExists = true;
+                            elementosMayoresList.add(elementoMayor);
+
+                            cuentaExists = true;
+                        }
                     }
-                }
 
-                for (Map.Entry<String, Double> entryHaber : asiento.getCreditos().entrySet()) {
-                    if (entryHaber.getKey().equalsIgnoreCase(cuenta)) {
-                        saldo -= entryHaber.getValue();
+                    for (Map.Entry<String, Double> entryHaber : asiento.getCreditos().entrySet()) {
+                        if (entryHaber.getKey().equalsIgnoreCase(cuenta)) {
+                            saldo -= entryHaber.getValue();
 
-                        totalHaber += entryHaber.getValue();
+                            totalHaber += entryHaber.getValue();
 
-                        elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
-                                0, entryHaber.getValue(), saldo);
+                            elementoMayor = new ElementoMayor(asiento.getFecha(), asiento.getRegistro(), asiento.getReferencia(),
+                                    0, entryHaber.getValue(), saldo);
 
-                        elementosMayoresList.add(elementoMayor);
+                            elementosMayoresList.add(elementoMayor);
 
-                        cuentaExists = true;
+                            cuentaExists = true;
+                        }
                     }
+
                 }
             }
 
@@ -289,6 +319,8 @@ public class CicloContable {
             }
 
         }
+
+        mCerrarCuentas = true;
     }
 
     private void createBalanceDeComprobacion() {
@@ -306,28 +338,32 @@ public class CicloContable {
 
             double saldoDebe;
             double saldoHaber;
+            ElementoMayor ultimoElemento;
 
-            ElementoMayor ultimoElemento = libroMayor.getElementosMayores().get(libroMayor.getElementosMayores().size() - 1);
+            if (!(libroMayor.getCodigo().charAt(0) == '6')) {
 
-            if (ultimoElemento.getDebe() > ultimoElemento.getHaber()) {
-                saldoDebe = ultimoElemento.getSaldo();
-                saldoHaber = 0;
-            } else {
-                saldoDebe = 0;
-                saldoHaber = ultimoElemento.getSaldo();
+                ultimoElemento = libroMayor.getElementosMayores().get(libroMayor.getElementosMayores().size() - 1);
+
+                if (ultimoElemento.getDebe() > ultimoElemento.getHaber()) {
+                    saldoDebe = ultimoElemento.getSaldo();
+                    saldoHaber = 0;
+                } else {
+                    saldoDebe = 0;
+                    saldoHaber = ultimoElemento.getSaldo();
+                }
+
+                elementoBalanceDeComprobacion = new ElementoBalanceDeComprobacion(counter, libroMayor.getCodigo(), libroMayor.getCuenta(),
+                        ultimoElemento.getDebe(), ultimoElemento.getHaber(), saldoDebe, saldoHaber);
+
+                elementosList.add(elementoBalanceDeComprobacion);
+
+                totalSumasDebe += ultimoElemento.getDebe();
+                totalSumasHaber += ultimoElemento.getHaber();
+                totalSaldosDebe += saldoDebe;
+                totalSaldosHaber += saldoHaber;
+
+                counter++;
             }
-
-            elementoBalanceDeComprobacion = new ElementoBalanceDeComprobacion(counter, libroMayor.getCodigo(), libroMayor.getCuenta(),
-                    ultimoElemento.getDebe(), ultimoElemento.getHaber(), saldoDebe, saldoHaber);
-
-            elementosList.add(elementoBalanceDeComprobacion);
-
-            totalSumasDebe += ultimoElemento.getDebe();
-            totalSumasHaber += ultimoElemento.getHaber();
-            totalSaldosDebe += saldoDebe;
-            totalSaldosHaber += saldoHaber;
-
-            counter++;
         }
         mBalanceDeComprobacion.setElementosBalance(elementosList);
         mBalanceDeComprobacion.setTotalSaldosDebe(totalSaldosDebe);
@@ -337,15 +373,138 @@ public class CicloContable {
 
     }
 
-    private void createLibroMayorSheet() {
-        //Create sheet for "Libro Mayor"
-        XSSFSheet sheet;
-        try {
-            sheet = mWorkbook.createSheet("Libro Mayor");
-        } catch (Exception e) {
-            mWorkbook.removeSheetAt(2);
-            sheet = mWorkbook.createSheet("Libro Mayor");
+    private void createResultadoIntegral() {
+        List<ElementoRI> listIngresos = new ArrayList<>();
+        List<ElementoRI> listGastos = new ArrayList<>();
+
+        double totalIngresos = 0;
+        double totalGastos = 0;
+        double utilidad;
+
+        for (ElementoBalanceDeComprobacion elemento : mBalanceDeComprobacion.getElementosBalance()) {
+            ElementoRI elementoRI;
+            //Add ingresos
+            if (elemento.getCodigo().contains("4.1")) {
+                elementoRI = new ElementoRI(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoHaber());
+                listIngresos.add(elementoRI);
+                totalIngresos += elemento.getSaldoHaber();
+            }
+
+            //Add gastos
+            if (elemento.getCodigo().contains("5.1")) {
+                elementoRI = new ElementoRI(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoDebe());
+                listGastos.add(elementoRI);
+                totalGastos += elemento.getSaldoDebe();
+            }
+
+            //Add costo de venta
+            if (elemento.getCodigo().contains("5.") && elemento.getCuenta().toLowerCase().contains("costo")) {
+                elementoRI = new ElementoRI(elemento.getCodigo(), elemento.getCuenta(), elemento.getSaldoDebe());
+                listIngresos.add(elementoRI);
+                totalIngresos -= elemento.getSaldoDebe();
+            }
         }
+
+        utilidad = totalIngresos - totalGastos;
+
+        mResultadoIntegral = new ResultadoIntegral(listIngresos, listGastos, totalIngresos, totalGastos, utilidad);
+
+
+    }
+
+    private void createResultadoIntegralSheet() {
+        //Create sheet
+        XSSFSheet sheet = mWorkbook.createSheet("Resultado Integral");
+
+        short rowCounter = 0;
+
+        //Headers
+        Row row = sheet.createRow(rowCounter);
+        Cell cell = row.createCell((short) 0);
+        createCell(mWorkbook, row, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        sheet.addMergedRegion(new CellRangeAddress(
+                rowCounter, //first row (0-based)
+                rowCounter, //last row  (0-based)
+                0, //first column (0-based)
+                3  //last column  (0-based)
+        ));
+        cell.setCellValue("Empresa \"X\"");
+        rowCounter++;
+
+        Row row1 = sheet.createRow(rowCounter);
+        Cell cell1 = row1.createCell((short) 0);
+        createCell(mWorkbook, row1, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        sheet.addMergedRegion(new CellRangeAddress(
+                rowCounter, //first row (0-based)
+                rowCounter, //last row  (0-based)
+                0, //first column (0-based)
+                3  //last column  (0-based)
+        ));
+        cell1.setCellValue("Estado de Resultado Integral");
+        rowCounter++;
+
+        Row row2 = sheet.createRow(rowCounter);
+        Cell cell2 = row2.createCell((short) 0);
+        createCell(mWorkbook, row2, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
+        sheet.addMergedRegion(new CellRangeAddress(
+                rowCounter, //first row (0-based)
+                rowCounter, //last row  (0-based)
+                0, //first column (0-based)
+                3  //last column  (0-based)
+        ));
+        cell2.setCellValue("01 - Junio a 30 Junio de 2015");
+        rowCounter++;
+
+        Row row3 = sheet.createRow(rowCounter);
+        row3.createCell(0).setCellValue("4.");
+        row3.createCell(1).setCellValue("Ingresos");
+        rowCounter++;
+
+        for (ElementoRI elementoRI : mResultadoIntegral.getIngresos()) {
+            Row rowI = sheet.createRow(rowCounter);
+            rowI.createCell(0).setCellValue(elementoRI.getCodigo());
+            rowI.createCell(1).setCellValue(elementoRI.getCuenta());
+            rowI.createCell(2).setCellValue(elementoRI.getValor());
+            rowCounter++;
+        }
+
+        Row row4 = sheet.createRow(rowCounter);
+        row4.createCell(1).setCellValue("-Utilidad de venta");
+        row4.createCell(3).setCellValue(mResultadoIntegral.getTotalIngresos());
+        rowCounter += 2;
+
+        Row row5 = sheet.createRow(rowCounter);
+        row5.createCell(0).setCellValue("5.");
+        row5.createCell(1).setCellValue("Gastos");
+        rowCounter++;
+
+        Row row6 = sheet.createRow(rowCounter);
+        row6.createCell(0).setCellValue("5.1.");
+        row6.createCell(1).setCellValue("Gastos Operativos");
+        rowCounter++;
+
+        for (ElementoRI elementoRI : mResultadoIntegral.getGastos()) {
+            Row rowG = sheet.createRow(rowCounter);
+            rowG.createCell(0).setCellValue(elementoRI.getCodigo());
+            rowG.createCell(1).setCellValue(elementoRI.getCuenta());
+            rowG.createCell(2).setCellValue(elementoRI.getValor());
+            rowCounter++;
+        }
+
+        Row row7 = sheet.createRow(rowCounter);
+        row7.createCell(1).setCellValue("Total Gastos");
+        row7.createCell(3).setCellValue(mResultadoIntegral.getTotalGastos());
+        rowCounter++;
+
+        Row row8 = sheet.createRow(rowCounter);
+        row8.createCell(1).setCellValue("-Utilidad antes de participacion");
+        row8.createCell(3).setCellValue(mResultadoIntegral.getUtilidad());
+    }
+
+    private void createLibroMayorSheet() {
+
+        //Create sheet for "Libro Mayor"
+        XSSFSheet sheet = mWorkbook.createSheet("Libro Mayor");
 
         //Data to be writen
 
@@ -402,9 +561,9 @@ public class CicloContable {
                 row4.createCell((short) 0).setCellValue(elementoMayor.getFecha());
                 row4.createCell((short) 1).setCellValue(elementoMayor.getDetalle());
                 row4.createCell((short) 2).setCellValue(elementoMayor.getReferencia());
-                row4.createCell((short) 3).setCellValue(elementoMayor.getDebe());
-                row4.createCell((short) 4).setCellValue(elementoMayor.getHaber());
-                row4.createCell((short) 5).setCellValue(elementoMayor.getSaldo());
+                row4.createCell((short) 3).setCellValue(formatDecimal(elementoMayor.getDebe()));
+                row4.createCell((short) 4).setCellValue(formatDecimal(elementoMayor.getHaber()));
+                row4.createCell((short) 5).setCellValue(formatDecimal(elementoMayor.getSaldo()));
 
                 rowCounter++;
             }
@@ -416,13 +575,7 @@ public class CicloContable {
 
     private void createBalanceDeComprobacionSheet() {
         //Create sheet for "Libro Mayor"
-        XSSFSheet sheet;
-        try {
-            sheet = mWorkbook.createSheet("Balance de Comprobacion");
-        } catch (Exception e) {
-            mWorkbook.removeSheetAt(2);
-            sheet = mWorkbook.createSheet("Balance de Comprobacion");
-        }
+        XSSFSheet sheet = mWorkbook.createSheet("Balance de Comprobacion");
 
         int rowCounter = 0;
 
@@ -453,19 +606,19 @@ public class CicloContable {
             rowE.createCell((short) 0).setCellValue(elemento.getNumero());
             rowE.createCell((short) 1).setCellValue(elemento.getCodigo());
             rowE.createCell((short) 2).setCellValue(elemento.getCuenta());
-            rowE.createCell((short) 3).setCellValue(elemento.getSumaDebe());
-            rowE.createCell((short) 4).setCellValue(elemento.getSumaHaber());
-            rowE.createCell((short) 5).setCellValue(elemento.getSaldoDebe());
-            rowE.createCell((short) 6).setCellValue(elemento.getSaldoHaber());
+            rowE.createCell((short) 3).setCellValue(formatDecimal(elemento.getSumaDebe()));
+            rowE.createCell((short) 4).setCellValue(formatDecimal(elemento.getSumaHaber()));
+            rowE.createCell((short) 5).setCellValue(formatDecimal(elemento.getSaldoDebe()));
+            rowE.createCell((short) 6).setCellValue(formatDecimal(elemento.getSaldoHaber()));
             rowCounter++;
         }
 
         Row lastRow = sheet.createRow(rowCounter);
         lastRow.createCell((short) 2).setCellValue("TOTALES");
-        lastRow.createCell((short) 3).setCellValue(mBalanceDeComprobacion.getTotalSumasDebe());
-        lastRow.createCell((short) 4).setCellValue(mBalanceDeComprobacion.getTotalSumasHaber());
-        lastRow.createCell((short) 5).setCellValue(mBalanceDeComprobacion.getTotalSaldosDebe());
-        lastRow.createCell((short) 6).setCellValue(mBalanceDeComprobacion.getTotalSaldosHaber());
+        lastRow.createCell((short) 3).setCellValue(formatDecimal(mBalanceDeComprobacion.getTotalSumasDebe()));
+        lastRow.createCell((short) 4).setCellValue(formatDecimal(mBalanceDeComprobacion.getTotalSumasHaber()));
+        lastRow.createCell((short) 5).setCellValue(formatDecimal(mBalanceDeComprobacion.getTotalSaldosDebe()));
+        lastRow.createCell((short) 6).setCellValue(formatDecimal(mBalanceDeComprobacion.getTotalSaldosHaber()));
 
 
     }
@@ -725,6 +878,13 @@ public class CicloContable {
         }
         System.out.println("Registro: " + asiento.getRegistro());
 
+    }
+
+    private String formatDecimal(double d) {
+        if (d != 0) {
+            return String.format("%.2f", d);
+        }
+        return "0";
     }
 
     /**
