@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -746,6 +747,33 @@ public class CicloContable {
         //Create sheet for "Libro Mayor"
         XSSFSheet sheet = mWorkbook.createSheet("Libro Mayor");
 
+        //Cell styles
+        XSSFCellStyle topCell = mWorkbook.createCellStyle();
+        XSSFCellStyle bottomCell = mWorkbook.createCellStyle();
+        XSSFCellStyle leftCell = mWorkbook.createCellStyle();
+        XSSFCellStyle rightCell = mWorkbook.createCellStyle();
+        XSSFCellStyle bottomRightCell = mWorkbook.createCellStyle();
+        XSSFCellStyle bottomLeftCell = mWorkbook.createCellStyle();
+        XSSFCellStyle topRightCell = mWorkbook.createCellStyle();
+        XSSFCellStyle topLeftCell = mWorkbook.createCellStyle();
+
+        topCell.setBorderTop(CellStyle.BORDER_MEDIUM);
+        bottomCell.setBorderBottom(CellStyle.BORDER_MEDIUM);
+        leftCell.setBorderLeft(CellStyle.BORDER_MEDIUM);
+        rightCell.setBorderRight(CellStyle.BORDER_MEDIUM);
+
+        bottomLeftCell.setBorderLeft(CellStyle.BORDER_MEDIUM);
+        bottomLeftCell.setBorderBottom(CellStyle.BORDER_MEDIUM);
+
+        bottomRightCell.setBorderRight(CellStyle.BORDER_MEDIUM);
+        bottomRightCell.setBorderBottom(CellStyle.BORDER_MEDIUM);
+
+        topLeftCell.setBorderLeft(CellStyle.BORDER_MEDIUM);
+        topLeftCell.setBorderTop(CellStyle.BORDER_MEDIUM);
+
+        topRightCell.setBorderTop(CellStyle.BORDER_MEDIUM);
+        topRightCell.setBorderRight(CellStyle.BORDER_MEDIUM);
+
         //Data to be writen
 
         //Rows counter to keep printing downwards
@@ -754,6 +782,15 @@ public class CicloContable {
         for (LibroMayor libroMayor : mLibrosMayores.getLibrosMayoresList()) {
             //Headers
             Row row = sheet.createRow(rowCounter);
+
+            //Cell borders
+            row.createCell((short) 1).setCellStyle(topCell);
+            row.createCell((short) 2).setCellStyle(topCell);
+            row.createCell((short) 3).setCellStyle(topCell);
+            row.createCell((short) 4).setCellStyle(topCell);
+            row.createCell((short) 5).setCellStyle(topRightCell);
+
+
             Cell cell = row.createCell((short) 0);
             createCell(mWorkbook, row, (short) 0, CellStyle.ALIGN_CENTER, CellStyle.VERTICAL_CENTER);
             sheet.addMergedRegion(new CellRangeAddress(
@@ -763,6 +800,7 @@ public class CicloContable {
                     5  //last column  (0-based)
             ));
             cell.setCellValue("Libro Mayor");
+            cell.setCellStyle(topLeftCell);
             rowCounter++;
 
             Row row1 = sheet.createRow(rowCounter);
@@ -774,7 +812,10 @@ public class CicloContable {
                     5  //last column  (0-based)
             ));
             cell1.setCellValue("Cuenta: " + libroMayor.getCuenta().toUpperCase());
+            cell1.setCellStyle(leftCell);
             rowCounter++;
+
+            row1.createCell((short) 5).setCellStyle(rightCell);
 
             Row row2 = sheet.createRow(rowCounter);
             Cell cell2 = row2.createCell((short) 0);
@@ -785,26 +826,59 @@ public class CicloContable {
                     5  //last column  (0-based)
             ));
             cell2.setCellValue("Codigo: " + libroMayor.getCodigo());
+            cell2.setCellStyle(leftCell);
             rowCounter++;
 
+            row2.createCell((short) 5).setCellStyle(rightCell);
+
             Row row3 = sheet.createRow(rowCounter);
-            row3.createCell((short) 0).setCellValue("FECHA");
+            Cell cell31 = row3.createCell((short) 0);
+            cell31.setCellValue("FECHA");
+            cell31.setCellStyle(leftCell);
             row3.createCell((short) 1).setCellValue("DETALLE");
             row3.createCell((short) 2).setCellValue("REF.");
             row3.createCell((short) 3).setCellValue("DEBE");
             row3.createCell((short) 4).setCellValue("HABER");
-            row3.createCell((short) 5).setCellValue("SALDO");
+            Cell cell32 = row3.createCell((short) 5);
+            cell32.setCellValue("SALDO");
+            cell32.setCellStyle(rightCell);
             rowCounter++;
 
+            int loopCounter = 0;
             for (ElementoMayor elementoMayor : libroMayor.getElementosMayores()) {
                 Row row4 = sheet.createRow(rowCounter);
-                row4.createCell((short) 0).setCellValue(elementoMayor.getFecha());
-                row4.createCell((short) 1).setCellValue(elementoMayor.getDetalle());
-                row4.createCell((short) 2).setCellValue(elementoMayor.getReferencia());
-                row4.createCell((short) 3).setCellValue(formatDecimal(elementoMayor.getDebe()));
-                row4.createCell((short) 4).setCellValue(formatDecimal(elementoMayor.getHaber()));
-                row4.createCell((short) 5).setCellValue(formatDecimal(elementoMayor.getSaldo()));
 
+                Cell cell4L = row4.createCell((short) 0);
+                cell4L.setCellValue(elementoMayor.getFecha());
+
+                Cell cell41 = row4.createCell((short) 1);
+                cell41.setCellValue(elementoMayor.getDetalle());
+
+                Cell cell42 = row4.createCell((short) 2);
+                cell42.setCellValue(elementoMayor.getReferencia());
+
+                Cell cell43 = row4.createCell((short) 3);
+                cell43.setCellValue(formatDecimal(elementoMayor.getDebe()));
+
+                Cell cell44 = row4.createCell((short) 4);
+                cell44.setCellValue(formatDecimal(elementoMayor.getHaber()));
+
+                Cell cell4R = row4.createCell((short) 5);
+                cell4R.setCellValue(formatDecimal(elementoMayor.getSaldo()));
+
+                if (loopCounter == libroMayor.getElementosMayores().size() - 1) {
+                    cell4L.setCellStyle(bottomLeftCell);
+                    cell41.setCellStyle(bottomCell);
+                    cell42.setCellStyle(bottomCell);
+                    cell43.setCellStyle(bottomCell);
+                    cell44.setCellStyle(bottomCell);
+                    cell4R.setCellStyle(bottomRightCell);
+                } else {
+                    cell4L.setCellStyle(leftCell);
+                    cell4R.setCellStyle(rightCell);
+                }
+
+                loopCounter++;
                 rowCounter++;
             }
 
