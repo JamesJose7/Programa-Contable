@@ -20,7 +20,9 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 /**
@@ -1194,11 +1196,11 @@ public class CicloContable {
 
     }
 
-    private String formatDecimal(double d) {
+    private double formatDecimal(double d) {
         if (d != 0) {
-            return String.format("%.2f", d);
+            return Math.round(d * 100.0) / 100.0;
         }
-        return "0";
+        return 0;
     }
 
     /**
